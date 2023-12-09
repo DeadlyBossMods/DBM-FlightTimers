@@ -1,0 +1,3 @@
+{
+	"luaTestAdapter.testGlob": "**/*_Test.lua",
+}
