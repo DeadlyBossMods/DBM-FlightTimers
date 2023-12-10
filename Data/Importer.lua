@@ -1,10 +1,10 @@
--- Usage: lua Importer.lua <defaults.lua file from InFlight> > Classic.lua
+-- Usage: lua Importer.lua <defaults.lua file from InFlight> <FlightPoints-Classic|Classic-WotLK|Retail>.lua > <Classic/Retail/...>.lua
 
 -- The inflight data is in turn based on crowdsourced contributions here:
 -- https://www.wowinterface.com/forums/showthread.php?t=18997&page=27
 -- If this mod ever receives traction we could setup something a bit more sophisticated.
 
-local filename = ...
+local filenameInflight, filenameFlightpoints = ...
 
 local function abort(err)
 	io.stderr:write(err)
@@ -12,30 +12,24 @@ local function abort(err)
 	os.exit(1)
 end
 
-if not filename then
-	return abort("Usage: lua Importer.lua <defaults.lua file from InFlight>")
+if not filenameInflight or not filenameFlightpoints then
+	return abort("Usage: lua Importer.lua <defaults.lua file from InFlight> <FlightPoints-Classic|Classic-WotLK|Retail>.lua")
 end
 
-local header =
-[[-- This file is auto-generated, DO NOT EDIT BY HAND.
--- See Importer.lua for details on re-generation.
-
-local _, ns = ...
-
-if UnitFactionGroup("player") == "Horde" then]]
-local mid = [[elseif UnitFactionGroup("player") == "Alliance" then]]
-local footer =
-[[else
-	error("could not find faction")
-end]]
+local function loadOrError(filename)
+	local chunk = loadfile(filename)
+	if not chunk then
+		return abort("could not load " .. filename)
+	end
+	local ok, res = pcall(chunk)
+	if not ok then
+		return abort("error while loading " .. filename .. "\n" .. tostring(res))
+	end
+	return res
+end
 
 InFlight = {}
-local inflightChunk = loadfile(filename)
-if not inflightChunk then
-	return abort("could not load " .. filename)
-end
-inflightChunk()
-
+loadOrError(filenameInflight)
 if not InFlight.defaults
 or not InFlight.defaults.global
 or not InFlight.defaults.global.Horde
@@ -43,7 +37,7 @@ or not InFlight.defaults.global.Alliance then
 	abort("could not find data after loading InFlight file")
 end
 
-local flightPoints = loadfile("FlightPoints-Classic.lua")()
+local flightPoints = loadOrError(filenameFlightpoints)
 
 local function numLength(x)
 	return math.floor(math.log10(x)) + 1
@@ -56,9 +50,14 @@ local function buildFor(faction)
 		if point.faction == "Neutral" or point.faction == faction then
 			local shortName = point.name:gsub(", [^,]+$", "")
 			if flightPointsByShortName[shortName] then
-				error("name collision for short name " .. shortName)
+				io.stderr:write(("name collision for short name %s: %s (%d) and %s (%d)\n"):format(
+					shortName,
+					flightPointsByShortName[shortName].name, flightPointsByShortName[shortName].id,
+					point.name, point.id
+				))
 			end
 			flightPointsByShortName[shortName] = point
+			flightPointsByShortName[point.id] = point
 		end
 	end
 	local output = {}
@@ -66,20 +65,24 @@ local function buildFor(faction)
 	for from, inDestinations in pairs(input) do
 		local fromPoint = flightPointsByShortName[from]
 		if not fromPoint then
-			error("unknown flight point: " .. from)
-		end
-		local outDestinations = {}
-		for dest, time in pairs(inDestinations) do
-			local toPoint = flightPointsByShortName[dest]
-			if not toPoint then
-				error("unknown flight point: " .. dest)
+			io.stderr:write("unknown source flight point: " .. from .. "\n")
+		else
+			local outDestinations = {}
+			for dest, time in pairs(inDestinations) do
+				if dest ~= "name" then
+					local toPoint = flightPointsByShortName[dest]
+					if not toPoint then
+						io.stderr:write("unknown destination flight point: " .. from .. "\n")
+					else
+						outDestinations[#outDestinations + 1] = {time = time, name = toPoint.name, id = toPoint.id}
+					end
+				end
 			end
-			outDestinations[#outDestinations + 1] = {time = time, name = toPoint.name, id = toPoint.id}
+			table.sort(outDestinations, function(a, b)
+				return a.id < b.id
+			end)
+			output[#output + 1] = {name = fromPoint.name, id = fromPoint.id, destinations = outDestinations}
 		end
-		table.sort(outDestinations, function(a, b)
-			return a.id < b.id
-		end)
-		output[#output + 1] = {name = fromPoint.name, id = fromPoint.id, destinations = outDestinations}
 	end
 	table.sort(output, function(a, b)
 		return a.id < b.id
@@ -108,12 +111,20 @@ local function buildFor(faction)
 	return result
 end
 
-print(header)
+
+print[[-- This file is auto-generated, DO NOT EDIT BY HAND.
+-- See Importer.lua for details on re-generation.
+
+local _, ns = ...
+
+if UnitFactionGroup("player") == "Horde" then]]
 for _, line in ipairs(buildFor("Horde")) do
 	print("\t" .. line)
 end
-print(mid)
+print[["elseif UnitFactionGroup("player") == "Alliance" then"]]
 for _, line in ipairs(buildFor("Alliance")) do
 	print("\t" .. line)
 end
-print(footer)
+print[[else
+	error("could not find faction")
+end]]
