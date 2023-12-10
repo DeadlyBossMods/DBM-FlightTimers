@@ -176,8 +176,9 @@ local function getMetadata()
 	return ("-- Release: %s (Season: %d)"):format(
 		WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "Retail"
 		or WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and "Classic"
+		or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC and "Classic-WotLK"
 		or "Unknown",
-		(C_Seasons and C_Seasons.GetActiveSeason() or -1)
+		(C_Seasons and C_Seasons.GetActiveSeason() or 0)
 	)
 end
 
