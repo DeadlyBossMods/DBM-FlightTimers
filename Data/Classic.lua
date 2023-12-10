@@ -1,5 +1,5 @@
 -- This file is auto-generated, DO NOT EDIT BY HAND.
--- See Importer.lua for details on re-generation.
+-- See import.sh for details on re-generation.
 
 local _, ns = ...
 

@@ -1,10 +1,11 @@
--- Usage: lua Importer.lua <defaults.lua file from InFlight> <FlightPoints-Classic|Classic-WotLK|Retail>.lua > <Classic/Retail/...>.lua
+-- Usage: lua Importer.lua <defaults.lua file from InFlight> <FlightPoints-Classic|Classic-WotLK|Retail>.lua <Base Data> > <Classic/Retail/...>.lua
+-- See import.sh for re-generating all flight timnings.
 
 -- The inflight data is in turn based on crowdsourced contributions here:
 -- https://www.wowinterface.com/forums/showthread.php?t=18997&page=27
 -- If this mod ever receives traction we could setup something a bit more sophisticated.
 
-local filenameInflight, filenameFlightpoints = ...
+local filenameInflight, filenameFlightpoints, filenameBase = ...
 
 local function abort(err)
 	io.stderr:write(err)
@@ -13,17 +14,21 @@ local function abort(err)
 end
 
 if not filenameInflight or not filenameFlightpoints then
-	return abort("Usage: lua Importer.lua <defaults.lua file from InFlight> <FlightPoints-Classic|Classic-WotLK|Retail>.lua")
+	return abort("Usage: lua Importer.lua <defaults.lua file from InFlight> <FlightPoints-Classic|Classic-WotLK|Retail>.lua <Base Data>\n"
+		.. "Optional <Base Data>.lua allows loading a previously loaded file and only adding timers not already present there. "
+		.. "This is used to load Classic timers for WotLK and then layer Retail data on top without messing up old routes changed later.")
 end
 
-local function loadOrError(filename)
+---@return table
+local function loadOrError(filename, ...)
 	local chunk = loadfile(filename)
 	if not chunk then
-		return abort("could not load " .. filename)
+		abort("could not load " .. filename)
+		return {} -- unreachable but makes LuaLS happy
 	end
-	local ok, res = pcall(chunk)
+	local ok, res = pcall(chunk, ...)
 	if not ok then
-		return abort("error while loading " .. filename .. "\n" .. tostring(res))
+		abort("error while loading " .. filename .. "\n" .. tostring(res))
 	end
 	return res
 end
@@ -39,16 +44,56 @@ end
 
 local flightPoints = loadOrError(filenameFlightpoints)
 
+local baseFlightData = {}
+if filenameBase then
+	local faction = "Horde"
+	_G.UnitFactionGroup = function() return faction end
+	local ns = {}
+	loadOrError(filenameBase, nil, ns)
+	baseFlightData.Horde = ns.FlightTimes
+	faction = "Alliance"
+	loadOrError(filenameBase, nil, ns)
+	baseFlightData.Alliance = ns.FlightTimes
+end
+
 local function numLength(x)
 	return math.floor(math.log10(x)) + 1
 end
 
+local function shortenName(name)
+	return name:gsub(", [^,]+$", "")
+end
+
+-- Override everything in input with data from base (adding if non-existant)
+local function applyBaseLayer(input, base, flightPointsById)
+	if not base then return end
+	for baseFrom, baseDestinations in pairs(base) do
+		local fromPoint = flightPointsById[baseFrom]
+		if not fromPoint then
+			error("unknown src flight point in base " .. baseFrom)
+		end
+		if not input[fromPoint.name] and not input[baseFrom] then
+			input[baseFrom] = baseDestinations
+		else
+			local inputDestinations = input[baseFrom] or input[fromPoint.name]
+			for baseDest, time in pairs(baseDestinations) do
+				local baseDestPoint = flightPointsById[baseDest]
+				if not baseDestPoint then
+					error("unknown dst flight point in base " .. baseFrom)
+				end
+				local key = inputDestinations[baseDest] and baseDest or inputDestinations[baseDestPoint.name] and baseDestPoint.name or baseDest
+				inputDestinations[key] = time
+			end
+		end
+	end
+end
+
 local function buildFor(faction)
-	local flightPointsByShortName = {}
+	local flightPointsByShortName, flightPointsById = {}, {}
 	for _, point in ipairs(flightPoints) do
 		-- have to filter by faction because, e.g., Booty Bay has horde and alliance paths with same name but different id
 		if point.faction == "Neutral" or point.faction == faction then
-			local shortName = point.name:gsub(", [^,]+$", "")
+			local shortName = shortenName(point.name)
 			if flightPointsByShortName[shortName] then
 				io.stderr:write(("name collision for short name %s: %s (%d) and %s (%d)\n"):format(
 					shortName,
@@ -58,10 +103,12 @@ local function buildFor(faction)
 			end
 			flightPointsByShortName[shortName] = point
 			flightPointsByShortName[point.id] = point
+			flightPointsById[point.id] = point
 		end
 	end
 	local output = {}
 	local input = InFlight.defaults.global[faction]
+	applyBaseLayer(input, baseFlightData[faction], flightPointsById)
 	for from, inDestinations in pairs(input) do
 		local fromPoint = flightPointsByShortName[from]
 		if not fromPoint then
@@ -113,7 +160,7 @@ end
 
 
 print[[-- This file is auto-generated, DO NOT EDIT BY HAND.
--- See Importer.lua for details on re-generation.
+-- See import.sh for details on re-generation.
 
 local _, ns = ...
 
@@ -121,7 +168,7 @@ if UnitFactionGroup("player") == "Horde" then]]
 for _, line in ipairs(buildFor("Horde")) do
 	print("\t" .. line)
 end
-print[["elseif UnitFactionGroup("player") == "Alliance" then"]]
+print[[elseif UnitFactionGroup("player") == "Alliance" then]]
 for _, line in ipairs(buildFor("Alliance")) do
 	print("\t" .. line)
 end
