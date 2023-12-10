@@ -1,11 +1,12 @@
-## Interface: 115000
-## Version: v1
+## Interface: 100200
+## Version: @project-version@
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000Flight Timers|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000Flug Timer|r
 ## Author: Tandanu
 ## X-License: LGPL
-## X-Website: https://github.com/emmericp/DBM-FlightTimers
+## X-Website: https://github.com/DeadlyBossMods/DBM-FlightTimers
 ## RequiredDeps: DBM-Core
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: OTHER
 ## X-DBM-Mod-Category: OTHER
@@ -16,7 +17,7 @@
 localization.en.lua
 localization.de.lua
 
-Data/Classic.lua
+Data/Retail.lua
 
 FlightCalculator.lua
 FlightTimers.lua

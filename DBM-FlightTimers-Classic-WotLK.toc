@@ -1,0 +1,22 @@
+## Interface: 30403
+## Version: @project-version@
+## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000Flight Timers|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000Flug Timer|r
+## Author: Tandanu
+## X-License: LGPL
+## X-Website: https://github.com/DeadlyBossMods/DBM-FlightTimers
+## RequiredDeps: DBM-Core
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: OTHER
+## X-DBM-Mod-Category: OTHER
+## X-DBM-Mod-No-Statistics: 1
+## X-DBM-Mod-Name: Flight Timers
+## X-DBM-Mod-Name-deDE: Flug Timer
+
+localization.en.lua
+localization.de.lua
+
+Data/Classic-WotLK.lua
+
+FlightCalculator.lua
+FlightTimers.lua
