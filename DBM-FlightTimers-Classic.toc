@@ -1,7 +1,8 @@
-## Interface: 11500
+## Interface: 11501
 ## Version: @project-version@
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000Flight Timers|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000Flug Timer|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM Мод|r|cffffe00a>|r |cffff0000Таймеры полета|r
 ## Author: Tandanu
 ## X-License: LGPL
 ## X-Website: https://github.com/DeadlyBossMods/DBM-FlightTimers
@@ -12,9 +13,11 @@
 ## X-DBM-Mod-No-Statistics: 1
 ## X-DBM-Mod-Name: Flight Timers
 ## X-DBM-Mod-Name-deDE: Flug Timer
+## X-DBM-Mod-Name-ruRU: Таймеры полета
 
 localization.en.lua
 localization.de.lua
+localization.ru.lua
 
 Data/Classic.lua
 
