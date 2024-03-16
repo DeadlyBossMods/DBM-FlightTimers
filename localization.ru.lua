@@ -5,10 +5,10 @@ L = DBM:GetModLocalization("FlightTimers")
 
 L:SetGeneralLocalization({
 	name = "Таймеры полета",
-	Via  = "Через %s",
+	Via  = "Через %s"
 })
 
 L:SetOptionLocalization({
 	TimerOption = "Таймер для полетов",
-	TimerViaOption = "Показывать таймеры для промежуточных остановок",
+	TimerViaOption = "Показывать таймеры для промежуточных остановок"
 })
