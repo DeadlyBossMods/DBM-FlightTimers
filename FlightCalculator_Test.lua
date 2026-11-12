@@ -133,6 +133,20 @@ function TestLearnedFlightTimes()
 	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=39})
 end
 
+function TestReverseFlightTimeFallback()
+	local fc = loadWoWModFile("FlightCalculator", mockTaxiMap)
+	local learned = {[50] = {[10] = 70}}
+	local cal = fc.FlightCalc:New(times, function() return learned end)
+	-- 1 -> 5 is only known in reverse
+	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=70})
+	-- A known forward time wins over the reverse one
+	learned[10] = {[50] = 65}
+	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=65})
+	-- Forward times pieced together from hops win over a reverse time for the whole flight
+	learned = {[50] = {[10] = 70}, [40] = {[50] = 9}}
+	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=39})
+end
+
 TestSuite = {}
 
 os.exit(lu.LuaUnit.run())

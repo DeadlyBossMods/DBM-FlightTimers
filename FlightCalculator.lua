@@ -68,46 +68,56 @@ function FlightCalc:getFlightMap()
 	return map
 end
 
-function FlightCalc:flightTimeSingleHop(fromEntry, toEntry)
-	-- Flight paths are not symmetric, do not try to add a reverse lookup here
+function FlightCalc:knownFlightTime(fromId, toId)
 	local learned = self.getLearnedTimes and self.getLearnedTimes()
-	local time = learned and learned[fromEntry.id] and learned[fromEntry.id][toEntry.id]
+	local time = learned and learned[fromId] and learned[fromId][toId]
 	if time then
 		return time
 	end
-	return self.flightTimes[fromEntry.id] and self.flightTimes[fromEntry.id][toEntry.id]
+	return self.flightTimes[fromId] and self.flightTimes[fromId][toId]
 end
 
-function FlightCalc:longestKnownPath(fromEntry, toEntry)
-	for i = #toEntry.hops, 1, -1 do
+function FlightCalc:flightTimeSingleHop(fromEntry, toEntry, allowReverse)
+	return self:knownFlightTime(fromEntry.id, toEntry.id) or allowReverse and self:knownFlightTime(toEntry.id, fromEntry.id) or nil
+end
+
+-- Furthest hop on the route to toEntry, after hop number afterIndex, with a known time from fromEntry
+function FlightCalc:longestKnownPath(fromEntry, toEntry, afterIndex, allowReverse)
+	for i = #toEntry.hops, afterIndex + 1, -1 do
 		local hop = toEntry.hops[i]
-		if self:flightTimeSingleHop(fromEntry, hop) then
-			return hop
+		if self:flightTimeSingleHop(fromEntry, hop, allowReverse) then
+			return hop, i
 		end
+	end
+end
+
+function FlightCalc:flightTimeFromKnownTimes(fromEntry, toEntry, allowReverse)
+	local direct = self:flightTimeSingleHop(fromEntry, toEntry, allowReverse)
+	if direct then
+		return direct
+	end
+	-- Piece together from hops if possible
+	local time = 0
+	local lastHop, lastIndex = fromEntry, 0
+	while true do
+		-- Only ever move forward along the route, reverse times could otherwise lead back to an earlier hop
+		local nextHop, nextIndex = self:longestKnownPath(lastHop, toEntry, lastIndex, allowReverse)
+		if not nextHop then
+			return nil
+		end
+		time = time + self:flightTimeSingleHop(lastHop, nextHop, allowReverse)
+		if nextHop == toEntry then
+			return time
+		else
+			time = time - 1 -- Not landing is slightly faster
+		end
+		lastHop, lastIndex = nextHop, nextIndex
 	end
 end
 
 function FlightCalc:flightTime(fromEntry, toEntry)
-	if self:flightTimeSingleHop(fromEntry, toEntry) then
-		return self:flightTimeSingleHop(fromEntry, toEntry)
-	else
-		-- Piece together from hops if possible
-		local time = 0
-		local lastHop = fromEntry
-		while true do
-			local nextHop = self:longestKnownPath(lastHop, toEntry)
-			if not nextHop then
-				return nil
-			end
-			time = time + self:flightTimeSingleHop(lastHop, nextHop)
-			if nextHop == toEntry then
-				return time
-			else
-				time = time - 1 -- Not landing is slightly faster
-			end
-			lastHop = nextHop
-		end
-	end
+	-- Flight paths are not symmetric (routes can differ by direction), so reverse times are only a fallback
+	return self:flightTimeFromKnownTimes(fromEntry, toEntry, false) or self:flightTimeFromKnownTimes(fromEntry, toEntry, true)
 end
 
 
