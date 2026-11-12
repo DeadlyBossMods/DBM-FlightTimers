@@ -7,6 +7,7 @@
 ## X-License: LGPL
 ## X-Website: https://github.com/DeadlyBossMods/DBM-FlightTimers
 ## RequiredDeps: DBM-Core
+## SavedVariables: DBMFlightTimers_AllSavedVars
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: OTHER
 ## X-DBM-Mod-Category: OTHER
