@@ -105,6 +105,34 @@ function TestGetFlightTimes()
 	lu.assertEquals(cal:PathToSlot(5), {})
 end
 
+function TestLearnedFlightTimes()
+	local fc = loadWoWModFile("FlightCalculator", mockTaxiMap)
+	local learned = nil
+	local cal = fc.FlightCalc:New(times, function() return learned end)
+	-- Nothing learned yet (SavedVariables not loaded): shipped data, start and destination for learning
+	local path, from, to = cal:PathToSlot(5)
+	assert(from and to)
+	lu.assertEquals(path, {})
+	lu.assertEquals({from.id, from.fullName, to.id, to.fullName}, {10, "Node 1", 50, "Node 5"})
+	learned = {
+		[10] = {
+			[20] = 12, -- overrides shipped 11
+			[50] = 60, -- unknown in shipped data
+		},
+	}
+	lu.assertEquals(cal:PathToSlot(2), {{name="Node 2", time=12}})
+	lu.assertEquals(cal:PathToSlot(5), {
+		{name="Node 2", time=12},
+		{name="Node 3", time=21},
+		{name="Node 4", time=31},
+		{name="Node 5", time=60},
+	})
+	-- Learned times combine with shipped ones when piecing together hops
+	learned[10][50] = nil
+	learned[40] = {[50] = 9}
+	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=39})
+end
+
 TestSuite = {}
 
 os.exit(lu.LuaUnit.run())

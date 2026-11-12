@@ -19,7 +19,22 @@ local timerVia = mod:NewIntermissionTimer(0, nil, "Via %s", true, "TimerViaOptio
 timer.startLarge = true
 timerVia.startLarge = true
 
-local flightCalc = ns.FlightCalc:New(ns.FlightTimes)
+-- Flight times measured in game, account-wide: see Data/import-learned.sh for turning them into a data file.
+-- DBMFlightTimers_Learned = {times = {[faction] = {[fromNodeId] = {[toNodeId] = seconds}}}, names = {[nodeId] = name}}
+-- SavedVariables load after this file runs, so only read the global lazily.
+local function learnedTimes(create)
+	local faction = UnitFactionGroup("player")
+	if not faction then return nil end
+	if create then
+		DBMFlightTimers_Learned = DBMFlightTimers_Learned or {}
+		DBMFlightTimers_Learned.times = DBMFlightTimers_Learned.times or {}
+		DBMFlightTimers_Learned.names = DBMFlightTimers_Learned.names or {}
+		DBMFlightTimers_Learned.times[faction] = DBMFlightTimers_Learned.times[faction] or {}
+	end
+	return DBMFlightTimers_Learned and DBMFlightTimers_Learned.times and DBMFlightTimers_Learned.times[faction]
+end
+
+local flightCalc = ns.FlightCalc:New(ns.FlightTimes, learnedTimes)
 
 function mod:PLAYER_CONTROL_LOST()
 	if self.state ~= "WAIT_FOR_START" then return end
@@ -88,23 +103,35 @@ function mod:OnEarlyLandingRequest()
 	end
 end
 
+function mod:LearnFlightTime(from, to, time)
+	local times = learnedTimes(true)
+	if not times then return end
+	times[from.id] = times[from.id] or {}
+	times[from.id][to.id] = time
+	DBMFlightTimers_Learned.names[from.id] = from.fullName
+	DBMFlightTimers_Learned.names[to.id] = to.fullName
+end
+
 function mod:PLAYER_CONTROL_GAINED()
 	if self.state ~= "IN_FLIGHT" then return end
-	-- TODO: learn timing here if it's off or if we didn't know at all before
-	-- note: don't do this if earlyLandingRequested is set because we could mess this up
 	local actualTime = GetTime() - self.controlLostTime
 	local lastHop = self.flightPath[#self.flightPath]
-	if lastHop then
-		DBM:Debug(("Flight took %d seconds (%d predicted)"):format(actualTime, lastHop.time))
+	DBM:Debug(("Flight from %s to %s took %.1f seconds (%s predicted)"):format(
+		self.flightFrom.name, self.flightTo.name, actualTime, lastHop and lastHop.time or "none"
+	))
+	-- An early landing ends somewhere else; cancelled flights (summons, battlegrounds) never get here.
+	if not self.earlyLandingRequested and actualTime >= 5 then
+		self:LearnFlightTime(self.flightFrom, self.flightTo, math.floor(actualTime + 0.5))
 	end
 	self:CancelFlight()
 end
 
 local function TakeTaxiNodeHook(slot)
-	local flightPath = flightCalc:PathToSlot(slot)
+	local flightPath, from, to = flightCalc:PathToSlot(slot)
 	if flightPath then
 		mod.flightRequestTime = GetTime()
 		mod.flightPath = flightPath
+		mod.flightFrom, mod.flightTo = from, to
 		mod.state = "WAIT_FOR_START"
 	else
 		DBM:Debug("Failed to calculate flight path to slot " .. tostring(slot))

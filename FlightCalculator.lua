@@ -1,12 +1,16 @@
 local _, ns = ...
 
 ---@class FlightCalc
+---@field flightTimes table<number, table<number, number>>
+---@field getLearnedTimes (fun(): table<number, table<number, number>>?)?
 local FlightCalc = {}
 ns.FlightCalc = FlightCalc
 
+---@param flightTimes table<number, table<number, number>> Shipped times: [fromNodeId][toNodeId] = seconds
+---@param getLearnedTimes (fun(): table<number, table<number, number>>?)? Times measured in game, preferred over shipped ones
 ---@return FlightCalc
-function FlightCalc:New(flightTimes)
-	return setmetatable({flightTimes = flightTimes}, {__index = FlightCalc})
+function FlightCalc:New(flightTimes, getLearnedTimes)
+	return setmetatable({flightTimes = flightTimes, getLearnedTimes = getLearnedTimes}, {__index = FlightCalc})
 end
 
 -- Strip suffixes so it fits neatly into the timer
@@ -35,6 +39,7 @@ function FlightCalc:getFlightMap()
 		local posId = positionId(node.position.x, node.position.y)
 		local entry = {
 			name = self:shortName(node.name),
+			fullName = node.name,
 			id = node.nodeID,
 			slot = node.slotIndex,
 			hops = {},
@@ -64,11 +69,13 @@ function FlightCalc:getFlightMap()
 end
 
 function FlightCalc:flightTimeSingleHop(fromEntry, toEntry)
-	if self.flightTimes[fromEntry.id] and self.flightTimes[fromEntry.id][toEntry.id] then
-		return self.flightTimes[fromEntry.id][toEntry.id]
-	else -- Flight paths are not symmetric, do not try to add a reverse lookup here
-		return nil
+	-- Flight paths are not symmetric, do not try to add a reverse lookup here
+	local learned = self.getLearnedTimes and self.getLearnedTimes()
+	local time = learned and learned[fromEntry.id] and learned[fromEntry.id][toEntry.id]
+	if time then
+		return time
 	end
+	return self.flightTimes[fromEntry.id] and self.flightTimes[fromEntry.id][toEntry.id]
 end
 
 function FlightCalc:longestKnownPath(fromEntry, toEntry)
@@ -104,12 +111,17 @@ function FlightCalc:flightTime(fromEntry, toEntry)
 end
 
 
+---Timers for each hop of the flight to toSlot, plus the start and destination nodes so the flight time can be learned.
+---The hop list is empty if the time to the destination is unknown.
+---@return {time: number, name: string}[]? hops
+---@return table? fromEntry
+---@return table? toEntry
 function FlightCalc:PathToSlot(toSlot)
 	local map = self:getFlightMap()
 	if not map then
 		return nil
 	end
-	local fromEntry, toEntry
+	local fromEntry
 	for _, entry in ipairs(map) do
 		if entry.isCurrent then
 			fromEntry = entry
@@ -132,10 +144,10 @@ function FlightCalc:PathToSlot(toSlot)
 			DBM:Debug(("Timing to final destination %s (id %s, slot %d) is unknown"):format(
 				toEntry.name, toEntry.id, toEntry.slot
 			))
-			return {} -- Don't show partial flight path even if available, that's just confusing
+			return {}, fromEntry, toEntry -- Don't show partial flight path even if available, that's just confusing
 		end
 	end
-	return result
+	return result, fromEntry, toEntry
 end
 
 return ns

@@ -13,6 +13,7 @@ This means that this works best in Classic and WotLK, Retail players may want to
 * Timers for intermediate stops
 * Updates timer if you request an early stop
 * Independent of client locale, works with all languages
+* Learns flight times while you fly and uses them next time
 
 ## FAQ
 
@@ -22,5 +23,4 @@ We currently just take the timers from InFlight that [are crowdsourced on WoWInt
 
 ## TODO List
 
-* Learn times of unknown or inaccurate flight paths
 * Come up with some way for users to contribute these timers
