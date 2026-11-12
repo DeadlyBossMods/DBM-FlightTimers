@@ -22,3 +22,17 @@ Run import.sh with your WoW base directory, for example:
 ## Notes on Classic-WotLK
 
 This file is created by first taking Classic timing data and then applying Retail data for all additional flight points that exist in WotLK.
+
+## Forever and learned flight times
+
+The AddOn measures every completed flight (no early landing, not interrupted by a summon or battleground) and saves the time in the SavedVariables (`DBMFlightTimers_Learned`, per faction and taxi node ID).
+Learned times are used instead of the shipped ones from then on.
+
+Forever.lua started as a copy of the Classic data (the node IDs are the same) and is updated from these learned times.
+Run import-learned.sh with your WoW base directory to merge the learned times from all accounts into Forever.lua, it prints every added or changed time:
+
+```
+./import-learned.sh '/Applications/World of Warcraft/'
+```
+
+The second argument selects another client folder (default `_forever_`); LearnedImporter.lua works for any data file.
