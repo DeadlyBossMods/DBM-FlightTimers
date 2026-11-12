@@ -42,7 +42,7 @@ function TestShortNameRegex()
 	lu.assertEquals(fc.FlightCalc:shortName("foo(bar)baz"), "foo(bar)baz")
 end
 
-Enum = {FlightPathState = {Current = 0, Reachable = 1}}
+Enum = {FlightPathState = {Current = 0, Reachable = 1, Unreachable = 2}}
 
 local baseMock = makeEnv({
 	GetLocale = function() return "enUS" end,
@@ -145,6 +145,72 @@ function TestReverseFlightTimeFallback()
 	-- Forward times pieced together from hops win over a reverse time for the whole flight
 	learned = {[50] = {[10] = 70}, [40] = {[50] = 9}}
 	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=39})
+end
+
+function TestNodesSharingAPosition()
+	-- Node 6 is unreachable and sits on top of node 3, node 7 on top of node 5
+	local env = makeEnv({
+		C_TaxiMap = {
+			GetAllTaxiNodes = function()
+				local r = mockTaxiMap.C_TaxiMap.GetAllTaxiNodes()
+				r[#r + 1] = {name = "Node 6", slotIndex = 6, nodeID = 60, position = r[3].position, state = Enum.FlightPathState.Unreachable}
+				r[#r + 1] = {name = "Node 7", slotIndex = 7, nodeID = 70, position = r[5].position, state = Enum.FlightPathState.Reachable}
+				return r
+			end
+		},
+	}, mockTaxiMap)
+	local fc = loadWoWModFile("FlightCalculator", env)
+	local cal = fc.FlightCalc:New(times)
+	lu.assertEquals(cal:PathToSlot(4), {
+		{name="Node 2", time=11},
+		{name="Node 3", time=21},
+		{name="Node 4", time=31},
+	})
+	local learned = {[10] = {[50] = 60}}
+	cal = fc.FlightCalc:New(times, function() return learned end)
+	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=60})
+end
+
+function TestIgnoredNodes()
+	-- Retired Forever node 3207 sits on top of node 5 and must not replace it
+	local env = makeEnv({
+		C_TaxiMap = {
+			GetAllTaxiNodes = function()
+				local r = mockTaxiMap.C_TaxiMap.GetAllTaxiNodes()
+				r[#r + 1] = {name = "zzOLD", slotIndex = 6, nodeID = 3207, position = r[5].position, state = Enum.FlightPathState.Reachable}
+				return r
+			end
+		},
+	}, mockTaxiMap)
+	local fc = loadWoWModFile("FlightCalculator", env)
+	local cal = fc.FlightCalc:New(times)
+	lu.assertEquals(cal:PathToSlot(4), {
+		{name="Node 2", time=11},
+		{name="Node 3", time=21},
+		{name="Node 4", time=31},
+	})
+	lu.assertNil(cal:PathToSlot(6))
+end
+
+function TestCurrentNodeAfterIgnoredSlot()
+	-- An ignored node leaves a gap in the slots, the current node comes after it
+	local env = makeEnv({
+		C_TaxiMap = {
+			GetAllTaxiNodes = function()
+				local r = mockTaxiMap.C_TaxiMap.GetAllTaxiNodes()
+				r[1].state = Enum.FlightPathState.Reachable
+				r[4].state = Enum.FlightPathState.Current
+				r[3].nodeID = 3207
+				return r
+			end
+		},
+	}, mockTaxiMap)
+	local fc = loadWoWModFile("FlightCalculator", env)
+	local cal = fc.FlightCalc:New({[40] = {[20] = 30}})
+	local path, from, to = cal:PathToSlot(2)
+	assert(from and to)
+	lu.assertEquals({from.id, to.id}, {40, 20})
+	lu.assertEquals(path, {{name="Node 2", time=30}})
 end
 
 TestSuite = {}

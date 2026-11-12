@@ -24,6 +24,13 @@ function FlightCalc:shortName(name)
 	end
 end
 
+-- Retired nodes the client still returns ("zzOLD..." Riverglades nodes on Forever), some on top of real ones
+local ignoredNodes = {
+	[3206] = true, -- zzOLDBolder'ok, Riverglades
+	[3207] = true, -- zzOLDRiverglades, Farholde Keep (at Southshore)
+	[3208] = true, -- zzOLDPowderfuse Port, Riverglades (at Ratchet)
+}
+
 local function positionId(x, y)
 	return ("%d,%d"):format(x * 1000, y * 1000)
 end
@@ -34,7 +41,12 @@ function FlightCalc:getFlightMap()
 	if not mapId then
 		return nil
 	end
-	local nodes = C_TaxiMap.GetAllTaxiNodes(mapId)
+	local nodes = {}
+	for _, node in ipairs(C_TaxiMap.GetAllTaxiNodes(mapId)) do
+		if not ignoredNodes[node.nodeID] then
+			nodes[#nodes + 1] = node
+		end
+	end
 	for _, node in ipairs(nodes) do
 		local posId = positionId(node.position.x, node.position.y)
 		local entry = {
@@ -45,16 +57,25 @@ function FlightCalc:getFlightMap()
 			hops = {},
 			pos = posId,
 			isCurrent = node.state == Enum.FlightPathState.Current,
+			isUnreachable = node.state == Enum.FlightPathState.Unreachable,
 		}
 		map[node.slotIndex] = entry
-		mapByPos[posId] = entry
+		-- Nodes can share a position, prefer one we can fly to
+		local other = mapByPos[posId]
+		if other then
+			DBM:Debug(("Taxi nodes %s (id %s) and %s (id %s) share position %s"):format(other.name, other.id, entry.name, entry.id, posId))
+		end
+		if not other or other.isUnreachable and not entry.isUnreachable then
+			mapByPos[posId] = entry
+		end
 	end
 	for _, node in ipairs(nodes) do
 		local hops = GetNumRoutes(node.slotIndex)
 		local entry = map[node.slotIndex]
 		for hop = 1, hops do
 			local posId = positionId(TaxiGetDestX(node.slotIndex, hop), TaxiGetDestY(node.slotIndex, hop))
-			local hopEntry = mapByPos[posId]
+			-- The last hop is the destination itself
+			local hopEntry = hop == hops and entry or mapByPos[posId]
 			if not hopEntry then
 				DBM:Debug("Route goes via unknown hop with position " .. posId)
 				-- Just ignore hops completely if we can't figure them out
@@ -132,7 +153,8 @@ function FlightCalc:PathToSlot(toSlot)
 		return nil
 	end
 	local fromEntry
-	for _, entry in ipairs(map) do
+	-- Slots can have gaps (ignored nodes), so no ipairs
+	for _, entry in pairs(map) do
 		if entry.isCurrent then
 			fromEntry = entry
 		end
@@ -141,9 +163,10 @@ function FlightCalc:PathToSlot(toSlot)
 	if not toEntry or not fromEntry then
 		return nil
 	end
-	DBM:Debug(("Getting flight times from %s (id %s, slot %d) to %s (id %s, slot %d)"):format(
+	DBM:Debug(("Getting flight times from %s (id %s, slot %d) to %s (id %s, slot %d), %d hops, shipped data %s"):format(
 		fromEntry.name, fromEntry.id, fromEntry.slot,
-		toEntry.name, toEntry.id, toEntry.slot
+		toEntry.name, toEntry.id, toEntry.slot,
+		#toEntry.hops, next(self.flightTimes) and "loaded" or "empty"
 	))
 	local result = {}
 	for i, hop in ipairs(toEntry.hops) do
