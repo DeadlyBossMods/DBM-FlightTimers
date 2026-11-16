@@ -518,21 +518,22 @@ if UnitFactionGroup("player") == "Horde" then
 elseif UnitFactionGroup("player") == "Alliance" then
 	ns.FlightTimes = {
 		[2] = { -- Stormwind, Elwynn
-			[4]  = 78,  -- Sentinel Hill, Westfall
-			[5]  = 113, -- Lakeshire, Redridge
-			[6]  = 259, -- Ironforge, Dun Morogh
-			[7]  = 343, -- Menethil Harbor, Wetlands
-			[8]  = 317, -- Thelsamar, Loch Modan
-			[12] = 116, -- Darkshire, Duskwood
-			[14] = 443, -- Southshore, Hillsbrad
-			[16] = 450, -- Refuge Pointe, Arathi
-			[19] = 245, -- Booty Bay, Stranglethorn
-			[43] = 508, -- Aerie Peak, The Hinterlands
-			[45] = 176, -- Nethergarde Keep, Blasted Lands
-			[66] = 506, -- Chillwind Camp, Western Plaguelands
-			[67] = 563, -- Light's Hope Chapel, Eastern Plaguelands
-			[71] = 157, -- Morgan's Vigil, Burning Steppes
-			[74] = 247, -- Thorium Point, Searing Gorge
+			[4]    = 78,  -- Sentinel Hill, Westfall
+			[5]    = 113, -- Lakeshire, Redridge
+			[6]    = 259, -- Ironforge, Dun Morogh
+			[7]    = 343, -- Menethil Harbor, Wetlands
+			[8]    = 317, -- Thelsamar, Loch Modan
+			[12]   = 116, -- Darkshire, Duskwood
+			[14]   = 443, -- Southshore, Hillsbrad
+			[16]   = 450, -- Refuge Pointe, Arathi
+			[19]   = 245, -- Booty Bay, Stranglethorn
+			[43]   = 508, -- Aerie Peak, The Hinterlands
+			[45]   = 176, -- Nethergarde Keep, Blasted Lands
+			[66]   = 506, -- Chillwind Camp, Western Plaguelands
+			[67]   = 563, -- Light's Hope Chapel, Eastern Plaguelands
+			[71]   = 157, -- Morgan's Vigil, Burning Steppes
+			[74]   = 247, -- Thorium Point, Searing Gorge
+			[3276] = 245, -- Farholde Keep, Riverglades
 		},
 		[4] = { -- Sentinel Hill, Westfall
 			[2]  = 86,  -- Stormwind, Elwynn
@@ -558,7 +559,7 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[74] = 153, -- Thorium Point, Searing Gorge
 		},
 		[6] = { -- Ironforge, Dun Morogh
-			[2]  = 210, -- Stormwind, Elwynn
+			[2]  = 211, -- Stormwind, Elwynn
 			[4]  = 274, -- Sentinel Hill, Westfall
 			[5]  = 201, -- Lakeshire, Redridge
 			[7]  = 128, -- Menethil Harbor, Wetlands
@@ -747,7 +748,7 @@ elseif UnitFactionGroup("player") == "Alliance" then
 		[39] = { -- Gadgetzan, Tanaris
 			[27] = 772, -- Rut'theran Village, Teldrassil
 			[28] = 540, -- Astranaar, Ashenvale
-			[31] = 177, -- Thalanaar, Feralas
+			[31] = 178, -- Thalanaar, Feralas
 			[32] = 154, -- Theramore, Dustwallow Marsh
 			[33] = 692, -- Stonetalon Peak, Stonetalon Mountains
 			[37] = 480, -- Nijel's Point, Desolace
@@ -874,20 +875,21 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[74] = 417, -- Thorium Point, Searing Gorge
 		},
 		[71] = { -- Morgan's Vigil, Burning Steppes
-			[2]  = 151, -- Stormwind, Elwynn
-			[4]  = 195, -- Sentinel Hill, Westfall
-			[5]  = 64,  -- Lakeshire, Redridge
-			[6]  = 187, -- Ironforge, Dun Morogh
-			[7]  = 270, -- Menethil Harbor, Wetlands
-			[8]  = 245, -- Thelsamar, Loch Modan
-			[12] = 121, -- Darkshire, Duskwood
-			[16] = 378, -- Refuge Pointe, Arathi
-			[19] = 288, -- Booty Bay, Stranglethorn
-			[43] = 436, -- Aerie Peak, The Hinterlands
-			[45] = 210, -- Nethergarde Keep, Blasted Lands
-			[66] = 435, -- Chillwind Camp, Western Plaguelands
-			[67] = 491, -- Light's Hope Chapel, Eastern Plaguelands
-			[74] = 104, -- Thorium Point, Searing Gorge
+			[2]    = 151, -- Stormwind, Elwynn
+			[4]    = 195, -- Sentinel Hill, Westfall
+			[5]    = 64,  -- Lakeshire, Redridge
+			[6]    = 187, -- Ironforge, Dun Morogh
+			[7]    = 270, -- Menethil Harbor, Wetlands
+			[8]    = 245, -- Thelsamar, Loch Modan
+			[12]   = 121, -- Darkshire, Duskwood
+			[16]   = 378, -- Refuge Pointe, Arathi
+			[19]   = 288, -- Booty Bay, Stranglethorn
+			[43]   = 436, -- Aerie Peak, The Hinterlands
+			[45]   = 210, -- Nethergarde Keep, Blasted Lands
+			[66]   = 435, -- Chillwind Camp, Western Plaguelands
+			[67]   = 491, -- Light's Hope Chapel, Eastern Plaguelands
+			[74]   = 104, -- Thorium Point, Searing Gorge
+			[3276] = 132, -- Farholde Keep, Riverglades
 		},
 		[73] = { -- Cenarion Hold, Silithus
 			[27] = 726, -- Rut'theran Village, Teldrassil
@@ -922,10 +924,10 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[27] = 805, -- Rut'theran Village, Teldrassil
 			[28] = 284, -- Astranaar, Ashenvale
 			[31] = 268, -- Thalanaar, Feralas
-			[32] = 106, -- Theramore, Dustwallow Marsh
+			[32] = 105, -- Theramore, Dustwallow Marsh
 			[33] = 437, -- Stonetalon Peak, Stonetalon Mountains
 			[37] = 439, -- Nijel's Point, Desolace
-			[39] = 261, -- Gadgetzan, Tanaris
+			[39] = 262, -- Gadgetzan, Tanaris
 			[41] = 446, -- Feathermoon, Feralas
 			[52] = 310, -- Everlook, Winterspring
 			[64] = 132, -- Talrendis Point, Azshara
