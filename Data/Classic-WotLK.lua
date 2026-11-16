@@ -451,9 +451,6 @@ if UnitFactionGroup("player") == "Horde" then
 			[166] = 85,  -- Emerald Sanctuary, Felwood
 		},
 		[63] = { -- Nighthaven, Moonglade
-			[22] = 400, -- Thunder Bluff, Mulgore
-		},
-		[63] = { -- Nighthaven, Moonglade
 			[22] = 543, -- Thunder Bluff, Mulgore
 		},
 		[68] = { -- Light's Hope Chapel, Eastern Plaguelands
@@ -1395,8 +1392,6 @@ if UnitFactionGroup("player") == "Horde" then
 			[335] = 202, -- Crusaders' Pinnacle, Icecrown
 			[340] = 227, -- Argent Tournament Grounds, Icecrown
 		},
-		[289] = { -- Amber Ledge, Borean Tundra
-		},
 		[294] = { -- Moa'ki, Dragonblight
 			[190] = 247, -- New Agamand, Howling Fjord
 			[192] = 205, -- Camp Winterhoof, Howling Fjord
@@ -1618,9 +1613,9 @@ if UnitFactionGroup("player") == "Horde" then
 			[11]  = 297, -- Undercity, Tirisfal
 			[13]  = 236, -- Tarren Mill, Hillsbrad
 			[17]  = 253, -- Hammerfall, Arathi
-			[56]  = 0, -- Stonard, Swamp of Sorrows
+			[56]  = 0,   -- Stonard, Swamp of Sorrows
 			[68]  = 50,  -- Light's Hope Chapel, Eastern Plaguelands
-			[70]  = 0, -- Flame Crest, Burning Steppes
+			[70]  = 0,   -- Flame Crest, Burning Steppes
 			[76]  = 186, -- Revantusk Village, The Hinterlands
 			[82]  = 231, -- Silvermoon City
 			[83]  = 164, -- Tranquillien, Ghostlands
@@ -1906,8 +1901,6 @@ if UnitFactionGroup("player") == "Horde" then
 			[334] = 105, -- The Argent Vanguard, Icecrown
 			[335] = 40,  -- Crusaders' Pinnacle, Icecrown
 			[337] = 182, -- Sunreaver's Command, Crystalsong Forest
-		},
-		[340] = { -- Argent Tournament Grounds, Icecrown
 		},
 		[383] = { -- Thondoril River, Western Plaguelands
 			[10]  = 179, -- The Sepulcher, Silverpine Forest
@@ -2383,9 +2376,6 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[94]  = 351, -- The Exodar
 			[166] = 216, -- Emerald Sanctuary, Felwood
 			[167] = 340, -- Forest Song, Ashenvale
-		},
-		[62] = { -- Nighthaven, Moonglade
-			[27] = 152, -- Rut'theran Village, Teldrassil
 		},
 		[62] = { -- Nighthaven, Moonglade
 			[27] = 149, -- Rut'theran Village, Teldrassil
@@ -3270,8 +3260,6 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[310] = 194, -- Dalaran
 			[325] = 137, -- Death's Rise, Icecrown
 			[327] = 264, -- Bouldercrag's Refuge, The Storm Peaks
-		},
-		[289] = { -- Amber Ledge, Borean Tundra
 		},
 		[294] = { -- Moa'ki, Dragonblight
 			[183] = 264, -- Valgarde Port, Howling Fjord

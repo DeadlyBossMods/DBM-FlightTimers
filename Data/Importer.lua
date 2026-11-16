@@ -57,7 +57,7 @@ if filenameBase then
 end
 
 local function numLength(x)
-	return math.floor(math.log10(x)) + 1
+	return #tostring(x)
 end
 
 local function shortenName(name)
@@ -88,6 +88,22 @@ local function applyBaseLayer(input, base, flightPointsById)
 	end
 end
 
+-- Keys in InFlight's data are node names, or node IDs where applyBaseLayer added data.
+-- Sorted with names first so data keyed by ID wins when both refer to the same node.
+local function sortedKeys(t)
+	local keys = {}
+	for k in pairs(t) do
+		keys[#keys + 1] = k
+	end
+	table.sort(keys, function(a, b)
+		if type(a) ~= type(b) then
+			return type(a) == "string"
+		end
+		return a < b
+	end)
+	return keys
+end
+
 local function buildFor(faction)
 	local flightPointsByShortName, flightPointsById = {}, {}
 	for _, point in ipairs(flightPoints) do
@@ -106,30 +122,49 @@ local function buildFor(faction)
 			flightPointsById[point.id] = point
 		end
 	end
-	local output = {}
+	local output, outputById = {}, {}
 	local input = InFlight.defaults.global[faction]
 	applyBaseLayer(input, baseFlightData[faction], flightPointsById)
-	for from, inDestinations in pairs(input) do
+	for _, from in ipairs(sortedKeys(input)) do
+		local inDestinations = input[from]
 		local fromPoint = flightPointsByShortName[from]
 		if not fromPoint then
 			io.stderr:write("unknown source flight point: " .. from .. "\n")
 		else
-			local outDestinations = {}
-			for dest, time in pairs(inDestinations) do
+			-- Several keys can map to the same node (name and ID, or names sharing a short name), merge them
+			local fromEntry = outputById[fromPoint.id]
+			if not fromEntry then
+				fromEntry = {name = fromPoint.name, id = fromPoint.id, destinationsById = {}}
+				outputById[fromPoint.id] = fromEntry
+				output[#output + 1] = fromEntry
+			end
+			for _, dest in ipairs(sortedKeys(inDestinations)) do
 				if dest ~= "name" then
+					local time = inDestinations[dest]
 					local toPoint = flightPointsByShortName[dest]
 					if not toPoint then
 						io.stderr:write("unknown destination flight point: " .. from .. "\n")
 					else
-						outDestinations[#outDestinations + 1] = {time = time, name = toPoint.name, id = toPoint.id}
+						local existing = fromEntry.destinationsById[toPoint.id]
+						if existing and existing.time ~= time then
+							io.stderr:write(("conflicting times for %s -> %s: %d and %d, using %d\n"):format(
+								fromPoint.name, toPoint.name, existing.time, time, time
+							))
+						end
+						fromEntry.destinationsById[toPoint.id] = {time = time, name = toPoint.name, id = toPoint.id}
 					end
 				end
 			end
-			table.sort(outDestinations, function(a, b)
-				return a.id < b.id
-			end)
-			output[#output + 1] = {name = fromPoint.name, id = fromPoint.id, destinations = outDestinations}
 		end
+	end
+	for _, from in ipairs(output) do
+		from.destinations = {}
+		for _, dest in pairs(from.destinationsById) do
+			from.destinations[#from.destinations + 1] = dest
+		end
+		table.sort(from.destinations, function(a, b)
+			return a.id < b.id
+		end)
 	end
 	table.sort(output, function(a, b)
 		return a.id < b.id

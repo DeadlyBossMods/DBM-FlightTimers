@@ -1667,8 +1667,6 @@ if UnitFactionGroup("player") == "Horde" then
 			[681] = 362, -- Forsaken Rear Guard, Silverpine Forest
 		},
 		[213] = { -- Shattered Sun Staging Area
-		},
-		[213] = { -- Shattered Sun Staging Area
 			[10]   = 601,  -- The Sepulcher, Silverpine Forest
 			[11]   = 583,  -- Undercity, Tirisfal
 			[13]   = 522,  -- Tarren Mill, Hillsbrad
@@ -1968,8 +1966,6 @@ if UnitFactionGroup("player") == "Horde" then
 			[310] = 56,  -- Dalaran
 		},
 		[289] = { -- Amber Ledge, Borean Tundra
-		},
-		[289] = { -- Amber Ledge, Borean Tundra
 			[191] = 310, -- Vengeance Landing, Howling Fjord
 			[226] = 25,  -- Transitus Shield, Coldarra
 			[252] = 141, -- Wyrmrest Temple, Dragonblight
@@ -2211,9 +2207,9 @@ if UnitFactionGroup("player") == "Horde" then
 			[11]  = 297, -- Undercity, Tirisfal
 			[13]  = 236, -- Tarren Mill, Hillsbrad
 			[17]  = 253, -- Hammerfall, Arathi
-			[56]  = 0, -- Stonard, Swamp of Sorrows
+			[56]  = 0,   -- Stonard, Swamp of Sorrows
 			[68]  = 50,  -- Light's Hope Chapel, Eastern Plaguelands
-			[70]  = 0, -- Flame Crest, Burning Steppes
+			[70]  = 0,   -- Flame Crest, Burning Steppes
 			[76]  = 186, -- Revantusk Village, The Hinterlands
 			[82]  = 231, -- Silvermoon City
 			[83]  = 164, -- Tranquillien, Ghostlands
@@ -2230,7 +2226,7 @@ if UnitFactionGroup("player") == "Horde" then
 			[625] = 209, -- Fairbreeze Village, Eversong Woods
 			[630] = 77,  -- Light's Shield Tower, Eastern Plaguelands
 			[631] = 252, -- Falconwing Square, Eversong Woods
-			[635] = 0, -- Fuselight, Badlands
+			[635] = 0,   -- Fuselight, Badlands
 			[645] = 277, -- Forsaken High Command, Silverpine Forest
 			[649] = 200, -- Andorhal, Western Plaguelands
 			[651] = 175, -- The Menders' Stead, Western Plaguelands
@@ -2240,7 +2236,7 @@ if UnitFactionGroup("player") == "Horde" then
 			[669] = 259, -- Eastpoint Tower, Hillsbrad
 			[670] = 256, -- Strahnbrad, Alterac Mountains
 			[672] = 191, -- Hearthglen, Western Plaguelands
-			[673] = 0, -- Iron Summit, Searing Gorge
+			[673] = 0,   -- Iron Summit, Searing Gorge
 			[681] = 303, -- Forsaken Rear Guard, Silverpine Forest
 		},
 		[320] = { -- K3, The Storm Peaks
@@ -2517,8 +2513,6 @@ if UnitFactionGroup("player") == "Horde" then
 			[334] = 105, -- The Argent Vanguard, Icecrown
 			[335] = 40,  -- Crusaders' Pinnacle, Icecrown
 			[337] = 182, -- Sunreaver's Command, Crystalsong Forest
-		},
-		[340] = { -- Argent Tournament Grounds, Icecrown
 		},
 		[350] = { -- Hellscream's Watch, Ashenvale
 			[22]  = 226, -- Thunder Bluff, Mulgore
@@ -7996,43 +7990,41 @@ if UnitFactionGroup("player") == "Horde" then
 		[2395] = { -- Oribos
 			[2398] = 69,  -- Bleak Redoubt, Maldraxxus
 			[2488] = 81,  -- Darkhaven, Revendreth
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
+			[2511] = 0,   -- Sanctuary of the Mad, Revendreth
 			[2512] = 103, -- Halls of Atonement, Revendreth
 			[2513] = 104, -- Old Gate, Revendreth
-			[2514] = 0, -- Pridefall Hamlet, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
+			[2514] = 0,   -- Pridefall Hamlet, Revendreth
+			[2515] = 0,   -- Dominance Keep, Revendreth
+			[2517] = 0,   -- Menagerie of the Master, Revendreth
+			[2518] = 0,   -- Wanecrypt Hill, Revendreth
 			[2519] = 63,  -- Aspirant's Rest, Bastion
-			[2520] = 0, -- Sagehaven, Bastion
+			[2520] = 0,   -- Sagehaven, Bastion
 			[2529] = 98,  -- Hero's Rest, Bastion
-			[2537] = 0, -- Charred Ramparts, Revendreth
-			[2558] = 0, -- The Spearhead, Maldraxxus
-			[2559] = 0, -- Spider's Watch, Maldraxxus
-			[2560] = 0, -- Keres' Rest, Maldraxxus
-			[2561] = 0, -- Renounced Bastille, Maldraxxus
+			[2537] = 0,   -- Charred Ramparts, Revendreth
+			[2558] = 0,   -- The Spearhead, Maldraxxus
+			[2559] = 0,   -- Spider's Watch, Maldraxxus
+			[2560] = 0,   -- Keres' Rest, Maldraxxus
+			[2561] = 0,   -- Renounced Bastille, Maldraxxus
 			[2564] = 78,  -- Theater of Pain, Maldraxxus
-			[2569] = 0, -- Plague Watch, Maldraxxus
-			[2584] = 0, -- Glitterfall Basin, Ardenweald
+			[2569] = 0,   -- Plague Watch, Maldraxxus
+			[2584] = 0,   -- Glitterfall Basin, Ardenweald
 			[2585] = 70,  -- Tirna Vaal, Ardenweald
-			[2586] = 0, -- Hibernal Hollow, Ardenweald
-			[2588] = 0, -- Root-Home, Ardenweald
-			[2589] = 0, -- Claw's Edge, Ardenweald
+			[2586] = 0,   -- Hibernal Hollow, Ardenweald
+			[2588] = 0,   -- Root-Home, Ardenweald
+			[2589] = 0,   -- Claw's Edge, Ardenweald
 			[2590] = 103, -- Refugee Camp, Ardenweald
-			[2680] = 0, -- Terrace of the Collectors, Bastion
-		},
-		[2395] = { -- Oribos
+			[2680] = 0,   -- Terrace of the Collectors, Bastion
 		},
 		[2398] = { -- Bleak Redoubt, Maldraxxus
 			[2395] = 69,  -- Oribos
 			[2488] = 145, -- Darkhaven, Revendreth
 			[2512] = 167, -- Halls of Atonement, Revendreth
-			[2558] = 0, -- The Spearhead, Maldraxxus
-			[2559] = 0, -- Spider's Watch, Maldraxxus
-			[2560] = 0, -- Keres' Rest, Maldraxxus
-			[2561] = 0, -- Renounced Bastille, Maldraxxus
-			[2564] = 0, -- Theater of Pain, Maldraxxus
-			[2569] = 0, -- Plague Watch, Maldraxxus
+			[2558] = 0,   -- The Spearhead, Maldraxxus
+			[2559] = 0,   -- Spider's Watch, Maldraxxus
+			[2560] = 0,   -- Keres' Rest, Maldraxxus
+			[2561] = 0,   -- Renounced Bastille, Maldraxxus
+			[2564] = 0,   -- Theater of Pain, Maldraxxus
+			[2569] = 0,   -- Plague Watch, Maldraxxus
 		},
 		[2404] = { -- Newhome, Nazjatar
 		},
@@ -8044,25 +8036,25 @@ if UnitFactionGroup("player") == "Horde" then
 		},
 		[2488] = { -- Darkhaven, Revendreth
 			[2395] = 76, -- Oribos
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2514] = 0, -- Pridefall Hamlet, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
-			[2537] = 0, -- Charred Ramparts, Revendreth
+			[2511] = 0,  -- Sanctuary of the Mad, Revendreth
+			[2512] = 0,  -- Halls of Atonement, Revendreth
+			[2513] = 0,  -- Old Gate, Revendreth
+			[2514] = 0,  -- Pridefall Hamlet, Revendreth
+			[2515] = 0,  -- Dominance Keep, Revendreth
+			[2517] = 0,  -- Menagerie of the Master, Revendreth
+			[2518] = 0,  -- Wanecrypt Hill, Revendreth
+			[2537] = 0,  -- Charred Ramparts, Revendreth
 		},
 		[2511] = { -- Sanctuary of the Mad, Revendreth
 			[2395] = 120, -- Oribos
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2514] = 0, -- Pridefall Hamlet, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
-			[2537] = 0, -- Charred Ramparts, Revendreth
+			[2488] = 0,   -- Darkhaven, Revendreth
+			[2512] = 0,   -- Halls of Atonement, Revendreth
+			[2513] = 0,   -- Old Gate, Revendreth
+			[2514] = 0,   -- Pridefall Hamlet, Revendreth
+			[2515] = 0,   -- Dominance Keep, Revendreth
+			[2517] = 0,   -- Menagerie of the Master, Revendreth
+			[2518] = 0,   -- Wanecrypt Hill, Revendreth
+			[2537] = 0,   -- Charred Ramparts, Revendreth
 		},
 		[2512] = { -- Halls of Atonement, Revendreth
 			[2488] = 0, -- Darkhaven, Revendreth
@@ -8086,25 +8078,25 @@ if UnitFactionGroup("player") == "Horde" then
 		},
 		[2514] = { -- Pridefall Hamlet, Revendreth
 			[2395] = 49, -- Oribos
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
-			[2537] = 0, -- Charred Ramparts, Revendreth
+			[2488] = 0,  -- Darkhaven, Revendreth
+			[2511] = 0,  -- Sanctuary of the Mad, Revendreth
+			[2512] = 0,  -- Halls of Atonement, Revendreth
+			[2513] = 0,  -- Old Gate, Revendreth
+			[2515] = 0,  -- Dominance Keep, Revendreth
+			[2517] = 0,  -- Menagerie of the Master, Revendreth
+			[2518] = 0,  -- Wanecrypt Hill, Revendreth
+			[2537] = 0,  -- Charred Ramparts, Revendreth
 		},
 		[2515] = { -- Dominance Keep, Revendreth
 			[2395] = 143, -- Oribos
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2514] = 0, -- Pridefall Hamlet, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
-			[2537] = 0, -- Charred Ramparts, Revendreth
+			[2488] = 0,   -- Darkhaven, Revendreth
+			[2511] = 0,   -- Sanctuary of the Mad, Revendreth
+			[2512] = 0,   -- Halls of Atonement, Revendreth
+			[2513] = 0,   -- Old Gate, Revendreth
+			[2514] = 0,   -- Pridefall Hamlet, Revendreth
+			[2517] = 0,   -- Menagerie of the Master, Revendreth
+			[2518] = 0,   -- Wanecrypt Hill, Revendreth
+			[2537] = 0,   -- Charred Ramparts, Revendreth
 		},
 		[2517] = { -- Menagerie of the Master, Revendreth
 			[2488] = 0, -- Darkhaven, Revendreth
@@ -8128,9 +8120,9 @@ if UnitFactionGroup("player") == "Horde" then
 		},
 		[2519] = { -- Aspirant's Rest, Bastion
 			[2395] = 73, -- Oribos
-			[2520] = 0, -- Sagehaven, Bastion
+			[2520] = 0,  -- Sagehaven, Bastion
 			[2529] = 43, -- Hero's Rest, Bastion
-			[2680] = 0, -- Terrace of the Collectors, Bastion
+			[2680] = 0,  -- Terrace of the Collectors, Bastion
 		},
 		[2520] = { -- Sagehaven, Bastion
 			[2519] = 0, -- Aspirant's Rest, Bastion
@@ -8140,8 +8132,8 @@ if UnitFactionGroup("player") == "Horde" then
 		[2529] = { -- Hero's Rest, Bastion
 			[2395] = 109, -- Oribos
 			[2519] = 44,  -- Aspirant's Rest, Bastion
-			[2520] = 0, -- Sagehaven, Bastion
-			[2680] = 0, -- Terrace of the Collectors, Bastion
+			[2520] = 0,   -- Sagehaven, Bastion
+			[2680] = 0,   -- Terrace of the Collectors, Bastion
 		},
 		[2537] = { -- Charred Ramparts, Revendreth
 			[2488] = 0, -- Darkhaven, Revendreth
@@ -8187,13 +8179,13 @@ if UnitFactionGroup("player") == "Horde" then
 		},
 		[2564] = { -- Theater of Pain, Maldraxxus
 			[2395] = 77,  -- Oribos
-			[2398] = 0, -- Bleak Redoubt, Maldraxxus
+			[2398] = 0,   -- Bleak Redoubt, Maldraxxus
 			[2529] = 169, -- Hero's Rest, Bastion
-			[2558] = 0, -- The Spearhead, Maldraxxus
-			[2559] = 0, -- Spider's Watch, Maldraxxus
-			[2560] = 0, -- Keres' Rest, Maldraxxus
-			[2561] = 0, -- Renounced Bastille, Maldraxxus
-			[2569] = 0, -- Plague Watch, Maldraxxus
+			[2558] = 0,   -- The Spearhead, Maldraxxus
+			[2559] = 0,   -- Spider's Watch, Maldraxxus
+			[2560] = 0,   -- Keres' Rest, Maldraxxus
+			[2561] = 0,   -- Renounced Bastille, Maldraxxus
+			[2569] = 0,   -- Plague Watch, Maldraxxus
 		},
 		[2569] = { -- Plague Watch, Maldraxxus
 			[2398] = 0, -- Bleak Redoubt, Maldraxxus
@@ -8213,11 +8205,11 @@ if UnitFactionGroup("player") == "Horde" then
 		[2585] = { -- Tirna Vaal, Ardenweald
 			[2395] = 70,  -- Oribos
 			[2519] = 130, -- Aspirant's Rest, Bastion
-			[2584] = 0, -- Glitterfall Basin, Ardenweald
-			[2586] = 0, -- Hibernal Hollow, Ardenweald
-			[2588] = 0, -- Root-Home, Ardenweald
-			[2589] = 0, -- Claw's Edge, Ardenweald
-			[2590] = 0, -- Refugee Camp, Ardenweald
+			[2584] = 0,   -- Glitterfall Basin, Ardenweald
+			[2586] = 0,   -- Hibernal Hollow, Ardenweald
+			[2588] = 0,   -- Root-Home, Ardenweald
+			[2589] = 0,   -- Claw's Edge, Ardenweald
+			[2590] = 0,   -- Refugee Camp, Ardenweald
 		},
 		[2586] = { -- Hibernal Hollow, Ardenweald
 			[2584] = 0, -- Glitterfall Basin, Ardenweald
@@ -9711,8 +9703,6 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[658] = 440, -- Vermillion Redoubt, Twilight Highlands
 		},
 		[213] = { -- Shattered Sun Staging Area
-		},
-		[213] = { -- Shattered Sun Staging Area
 			[2]   = 851,  -- Stormwind, Elwynn
 			[4]   = 915,  -- Sentinel Hill, Westfall
 			[6]   = 692,  -- Ironforge, Dun Morogh
@@ -9958,8 +9948,6 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[334] = 222, -- The Argent Vanguard, Icecrown
 			[335] = 226, -- Crusaders' Pinnacle, Icecrown
 			[340] = 313, -- Argent Tournament Grounds, Icecrown
-		},
-		[289] = { -- Amber Ledge, Borean Tundra
 		},
 		[289] = { -- Amber Ledge, Borean Tundra
 			[183] = 321, -- Valgarde Port, Howling Fjord
@@ -15738,34 +15726,32 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[2277] = 17,  -- Proudmoore Keep, Tiragarde Sound
 		},
 		[2395] = { -- Oribos
-		},
-		[2395] = { -- Oribos
-			[2398] = 0, -- Bleak Redoubt, Maldraxxus
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2514] = 0, -- Pridefall Hamlet, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
+			[2398] = 0,  -- Bleak Redoubt, Maldraxxus
+			[2488] = 0,  -- Darkhaven, Revendreth
+			[2511] = 0,  -- Sanctuary of the Mad, Revendreth
+			[2512] = 0,  -- Halls of Atonement, Revendreth
+			[2513] = 0,  -- Old Gate, Revendreth
+			[2514] = 0,  -- Pridefall Hamlet, Revendreth
+			[2515] = 0,  -- Dominance Keep, Revendreth
+			[2517] = 0,  -- Menagerie of the Master, Revendreth
+			[2518] = 0,  -- Wanecrypt Hill, Revendreth
 			[2519] = 63, -- Aspirant's Rest, Bastion
-			[2520] = 0, -- Sagehaven, Bastion
+			[2520] = 0,  -- Sagehaven, Bastion
 			[2529] = 98, -- Hero's Rest, Bastion
-			[2537] = 0, -- Charred Ramparts, Revendreth
-			[2558] = 0, -- The Spearhead, Maldraxxus
-			[2559] = 0, -- Spider's Watch, Maldraxxus
-			[2560] = 0, -- Keres' Rest, Maldraxxus
-			[2561] = 0, -- Renounced Bastille, Maldraxxus
+			[2537] = 0,  -- Charred Ramparts, Revendreth
+			[2558] = 0,  -- The Spearhead, Maldraxxus
+			[2559] = 0,  -- Spider's Watch, Maldraxxus
+			[2560] = 0,  -- Keres' Rest, Maldraxxus
+			[2561] = 0,  -- Renounced Bastille, Maldraxxus
 			[2564] = 78, -- Theater of Pain, Maldraxxus
-			[2569] = 0, -- Plague Watch, Maldraxxus
-			[2584] = 0, -- Glitterfall Basin, Ardenweald
-			[2585] = 0, -- Tirna Vaal, Ardenweald
-			[2586] = 0, -- Hibernal Hollow, Ardenweald
-			[2588] = 0, -- Root-Home, Ardenweald
-			[2589] = 0, -- Claw's Edge, Ardenweald
-			[2590] = 0, -- Refugee Camp, Ardenweald
-			[2680] = 0, -- Terrace of the Collectors, Bastion
+			[2569] = 0,  -- Plague Watch, Maldraxxus
+			[2584] = 0,  -- Glitterfall Basin, Ardenweald
+			[2585] = 0,  -- Tirna Vaal, Ardenweald
+			[2586] = 0,  -- Hibernal Hollow, Ardenweald
+			[2588] = 0,  -- Root-Home, Ardenweald
+			[2589] = 0,  -- Claw's Edge, Ardenweald
+			[2590] = 0,  -- Refugee Camp, Ardenweald
+			[2680] = 0,  -- Terrace of the Collectors, Bastion
 		},
 		[2398] = { -- Bleak Redoubt, Maldraxxus
 			[2558] = 0, -- The Spearhead, Maldraxxus
@@ -15811,26 +15797,26 @@ elseif UnitFactionGroup("player") == "Alliance" then
 		},
 		[2511] = { -- Sanctuary of the Mad, Revendreth
 			[2395] = 120, -- Oribos
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2514] = 0, -- Pridefall Hamlet, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
+			[2488] = 0,   -- Darkhaven, Revendreth
+			[2512] = 0,   -- Halls of Atonement, Revendreth
+			[2513] = 0,   -- Old Gate, Revendreth
+			[2514] = 0,   -- Pridefall Hamlet, Revendreth
+			[2515] = 0,   -- Dominance Keep, Revendreth
+			[2517] = 0,   -- Menagerie of the Master, Revendreth
+			[2518] = 0,   -- Wanecrypt Hill, Revendreth
 			[2520] = 236, -- Sagehaven, Bastion
-			[2537] = 0, -- Charred Ramparts, Revendreth
+			[2537] = 0,   -- Charred Ramparts, Revendreth
 		},
 		[2512] = { -- Halls of Atonement, Revendreth
 			[2395] = 98, -- Oribos
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2514] = 0, -- Pridefall Hamlet, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
-			[2537] = 0, -- Charred Ramparts, Revendreth
+			[2488] = 0,  -- Darkhaven, Revendreth
+			[2511] = 0,  -- Sanctuary of the Mad, Revendreth
+			[2513] = 0,  -- Old Gate, Revendreth
+			[2514] = 0,  -- Pridefall Hamlet, Revendreth
+			[2515] = 0,  -- Dominance Keep, Revendreth
+			[2517] = 0,  -- Menagerie of the Master, Revendreth
+			[2518] = 0,  -- Wanecrypt Hill, Revendreth
+			[2537] = 0,  -- Charred Ramparts, Revendreth
 		},
 		[2513] = { -- Old Gate, Revendreth
 			[2488] = 0, -- Darkhaven, Revendreth
@@ -15844,14 +15830,14 @@ elseif UnitFactionGroup("player") == "Alliance" then
 		},
 		[2514] = { -- Pridefall Hamlet, Revendreth
 			[2395] = 49,  -- Oribos
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
-			[2537] = 0, -- Charred Ramparts, Revendreth
+			[2488] = 0,   -- Darkhaven, Revendreth
+			[2511] = 0,   -- Sanctuary of the Mad, Revendreth
+			[2512] = 0,   -- Halls of Atonement, Revendreth
+			[2513] = 0,   -- Old Gate, Revendreth
+			[2515] = 0,   -- Dominance Keep, Revendreth
+			[2517] = 0,   -- Menagerie of the Master, Revendreth
+			[2518] = 0,   -- Wanecrypt Hill, Revendreth
+			[2537] = 0,   -- Charred Ramparts, Revendreth
 			[2564] = 122, -- Theater of Pain, Maldraxxus
 			[2585] = 113, -- Tirna Vaal, Ardenweald
 		},
@@ -15876,29 +15862,29 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[2537] = 0, -- Charred Ramparts, Revendreth
 		},
 		[2518] = { -- Wanecrypt Hill, Revendreth
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
+			[2488] = 0,   -- Darkhaven, Revendreth
+			[2511] = 0,   -- Sanctuary of the Mad, Revendreth
+			[2512] = 0,   -- Halls of Atonement, Revendreth
+			[2513] = 0,   -- Old Gate, Revendreth
 			[2514] = 46,  -- Pridefall Hamlet, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2537] = 0, -- Charred Ramparts, Revendreth
+			[2515] = 0,   -- Dominance Keep, Revendreth
+			[2517] = 0,   -- Menagerie of the Master, Revendreth
+			[2537] = 0,   -- Charred Ramparts, Revendreth
 			[2586] = 175, -- Hibernal Hollow, Ardenweald
 		},
 		[2519] = { -- Aspirant's Rest, Bastion
 			[2395] = 73,  -- Oribos
 			[2512] = 172, -- Halls of Atonement, Revendreth
-			[2520] = 0, -- Sagehaven, Bastion
+			[2520] = 0,   -- Sagehaven, Bastion
 			[2529] = 43,  -- Hero's Rest, Bastion
 			[2564] = 143, -- Theater of Pain, Maldraxxus
-			[2680] = 0, -- Terrace of the Collectors, Bastion
+			[2680] = 0,   -- Terrace of the Collectors, Bastion
 		},
 		[2520] = { -- Sagehaven, Bastion
-			[2519] = 0, -- Aspirant's Rest, Bastion
+			[2519] = 0,   -- Aspirant's Rest, Bastion
 			[2529] = 41,  -- Hero's Rest, Bastion
 			[2589] = 261, -- Claw's Edge, Ardenweald
-			[2680] = 0, -- Terrace of the Collectors, Bastion
+			[2680] = 0,   -- Terrace of the Collectors, Bastion
 		},
 		[2529] = { -- Hero's Rest, Bastion
 			[2395] = 109, -- Oribos
@@ -15910,18 +15896,18 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[2585] = 178, -- Tirna Vaal, Ardenweald
 			[2586] = 199, -- Hibernal Hollow, Ardenweald
 			[2590] = 211, -- Refugee Camp, Ardenweald
-			[2680] = 0, -- Terrace of the Collectors, Bastion
+			[2680] = 0,   -- Terrace of the Collectors, Bastion
 		},
 		[2537] = { -- Charred Ramparts, Revendreth
 			[2395] = 115, -- Oribos
-			[2488] = 0, -- Darkhaven, Revendreth
-			[2511] = 0, -- Sanctuary of the Mad, Revendreth
-			[2512] = 0, -- Halls of Atonement, Revendreth
-			[2513] = 0, -- Old Gate, Revendreth
-			[2514] = 0, -- Pridefall Hamlet, Revendreth
-			[2515] = 0, -- Dominance Keep, Revendreth
-			[2517] = 0, -- Menagerie of the Master, Revendreth
-			[2518] = 0, -- Wanecrypt Hill, Revendreth
+			[2488] = 0,   -- Darkhaven, Revendreth
+			[2511] = 0,   -- Sanctuary of the Mad, Revendreth
+			[2512] = 0,   -- Halls of Atonement, Revendreth
+			[2513] = 0,   -- Old Gate, Revendreth
+			[2514] = 0,   -- Pridefall Hamlet, Revendreth
+			[2515] = 0,   -- Dominance Keep, Revendreth
+			[2517] = 0,   -- Menagerie of the Master, Revendreth
+			[2518] = 0,   -- Wanecrypt Hill, Revendreth
 		},
 		[2558] = { -- The Spearhead, Maldraxxus
 			[2398] = 0, -- Bleak Redoubt, Maldraxxus
@@ -15941,42 +15927,42 @@ elseif UnitFactionGroup("player") == "Alliance" then
 		},
 		[2560] = { -- Keres' Rest, Maldraxxus
 			[2395] = 102, -- Oribos
-			[2398] = 0, -- Bleak Redoubt, Maldraxxus
+			[2398] = 0,   -- Bleak Redoubt, Maldraxxus
 			[2514] = 152, -- Pridefall Hamlet, Revendreth
-			[2558] = 0, -- The Spearhead, Maldraxxus
-			[2559] = 0, -- Spider's Watch, Maldraxxus
-			[2561] = 0, -- Renounced Bastille, Maldraxxus
-			[2564] = 0, -- Theater of Pain, Maldraxxus
-			[2569] = 0, -- Plague Watch, Maldraxxus
+			[2558] = 0,   -- The Spearhead, Maldraxxus
+			[2559] = 0,   -- Spider's Watch, Maldraxxus
+			[2561] = 0,   -- Renounced Bastille, Maldraxxus
+			[2564] = 0,   -- Theater of Pain, Maldraxxus
+			[2569] = 0,   -- Plague Watch, Maldraxxus
 			[2680] = 234, -- Terrace of the Collectors, Bastion
 		},
 		[2561] = { -- Renounced Bastille, Maldraxxus
-			[2398] = 0, -- Bleak Redoubt, Maldraxxus
+			[2398] = 0,   -- Bleak Redoubt, Maldraxxus
 			[2529] = 196, -- Hero's Rest, Bastion
-			[2558] = 0, -- The Spearhead, Maldraxxus
-			[2559] = 0, -- Spider's Watch, Maldraxxus
-			[2560] = 0, -- Keres' Rest, Maldraxxus
-			[2564] = 0, -- Theater of Pain, Maldraxxus
-			[2569] = 0, -- Plague Watch, Maldraxxus
+			[2558] = 0,   -- The Spearhead, Maldraxxus
+			[2559] = 0,   -- Spider's Watch, Maldraxxus
+			[2560] = 0,   -- Keres' Rest, Maldraxxus
+			[2564] = 0,   -- Theater of Pain, Maldraxxus
+			[2569] = 0,   -- Plague Watch, Maldraxxus
 		},
 		[2564] = { -- Theater of Pain, Maldraxxus
 			[2395] = 77,  -- Oribos
-			[2398] = 0, -- Bleak Redoubt, Maldraxxus
+			[2398] = 0,   -- Bleak Redoubt, Maldraxxus
 			[2519] = 133, -- Aspirant's Rest, Bastion
-			[2558] = 0, -- The Spearhead, Maldraxxus
-			[2559] = 0, -- Spider's Watch, Maldraxxus
-			[2560] = 0, -- Keres' Rest, Maldraxxus
-			[2561] = 0, -- Renounced Bastille, Maldraxxus
-			[2569] = 0, -- Plague Watch, Maldraxxus
+			[2558] = 0,   -- The Spearhead, Maldraxxus
+			[2559] = 0,   -- Spider's Watch, Maldraxxus
+			[2560] = 0,   -- Keres' Rest, Maldraxxus
+			[2561] = 0,   -- Renounced Bastille, Maldraxxus
+			[2569] = 0,   -- Plague Watch, Maldraxxus
 			[2586] = 166, -- Hibernal Hollow, Ardenweald
 		},
 		[2569] = { -- Plague Watch, Maldraxxus
-			[2398] = 0, -- Bleak Redoubt, Maldraxxus
-			[2558] = 0, -- The Spearhead, Maldraxxus
-			[2559] = 0, -- Spider's Watch, Maldraxxus
-			[2560] = 0, -- Keres' Rest, Maldraxxus
-			[2561] = 0, -- Renounced Bastille, Maldraxxus
-			[2564] = 0, -- Theater of Pain, Maldraxxus
+			[2398] = 0,   -- Bleak Redoubt, Maldraxxus
+			[2558] = 0,   -- The Spearhead, Maldraxxus
+			[2559] = 0,   -- Spider's Watch, Maldraxxus
+			[2560] = 0,   -- Keres' Rest, Maldraxxus
+			[2561] = 0,   -- Renounced Bastille, Maldraxxus
+			[2564] = 0,   -- Theater of Pain, Maldraxxus
 			[2585] = 157, -- Tirna Vaal, Ardenweald
 			[2586] = 179, -- Hibernal Hollow, Ardenweald
 		},
@@ -15985,11 +15971,11 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[2518] = 175, -- Wanecrypt Hill, Revendreth
 			[2519] = 151, -- Aspirant's Rest, Bastion
 			[2520] = 208, -- Sagehaven, Bastion
-			[2585] = 0, -- Tirna Vaal, Ardenweald
-			[2586] = 0, -- Hibernal Hollow, Ardenweald
-			[2588] = 0, -- Root-Home, Ardenweald
-			[2589] = 0, -- Claw's Edge, Ardenweald
-			[2590] = 0, -- Refugee Camp, Ardenweald
+			[2585] = 0,   -- Tirna Vaal, Ardenweald
+			[2586] = 0,   -- Hibernal Hollow, Ardenweald
+			[2588] = 0,   -- Root-Home, Ardenweald
+			[2589] = 0,   -- Claw's Edge, Ardenweald
+			[2590] = 0,   -- Refugee Camp, Ardenweald
 		},
 		[2585] = { -- Tirna Vaal, Ardenweald
 			[2584] = 0, -- Glitterfall Basin, Ardenweald
@@ -16009,21 +15995,21 @@ elseif UnitFactionGroup("player") == "Alliance" then
 			[2513] = 222, -- Old Gate, Revendreth
 			[2514] = 172, -- Pridefall Hamlet, Revendreth
 			[2564] = 199, -- Theater of Pain, Maldraxxus
-			[2584] = 0, -- Glitterfall Basin, Ardenweald
-			[2585] = 0, -- Tirna Vaal, Ardenweald
-			[2586] = 0, -- Hibernal Hollow, Ardenweald
+			[2584] = 0,   -- Glitterfall Basin, Ardenweald
+			[2585] = 0,   -- Tirna Vaal, Ardenweald
+			[2586] = 0,   -- Hibernal Hollow, Ardenweald
 			[2589] = 48,  -- Claw's Edge, Ardenweald
-			[2590] = 0, -- Refugee Camp, Ardenweald
+			[2590] = 0,   -- Refugee Camp, Ardenweald
 		},
 		[2589] = { -- Claw's Edge, Ardenweald
 			[2519] = 178, -- Aspirant's Rest, Bastion
 			[2520] = 234, -- Sagehaven, Bastion
 			[2537] = 228, -- Charred Ramparts, Revendreth
-			[2584] = 0, -- Glitterfall Basin, Ardenweald
-			[2585] = 0, -- Tirna Vaal, Ardenweald
-			[2586] = 0, -- Hibernal Hollow, Ardenweald
-			[2588] = 0, -- Root-Home, Ardenweald
-			[2590] = 0, -- Refugee Camp, Ardenweald
+			[2584] = 0,   -- Glitterfall Basin, Ardenweald
+			[2585] = 0,   -- Tirna Vaal, Ardenweald
+			[2586] = 0,   -- Hibernal Hollow, Ardenweald
+			[2588] = 0,   -- Root-Home, Ardenweald
+			[2590] = 0,   -- Refugee Camp, Ardenweald
 		},
 		[2590] = { -- Refugee Camp, Ardenweald
 			[2584] = 0, -- Glitterfall Basin, Ardenweald
@@ -16034,9 +16020,9 @@ elseif UnitFactionGroup("player") == "Alliance" then
 		},
 		[2680] = { -- Terrace of the Collectors, Bastion
 			[2488] = 231, -- Darkhaven, Revendreth
-			[2519] = 0, -- Aspirant's Rest, Bastion
-			[2520] = 0, -- Sagehaven, Bastion
-			[2529] = 0, -- Hero's Rest, Bastion
+			[2519] = 0,   -- Aspirant's Rest, Bastion
+			[2520] = 0,   -- Sagehaven, Bastion
+			[2529] = 0,   -- Hero's Rest, Bastion
 		},
 	}
 else
