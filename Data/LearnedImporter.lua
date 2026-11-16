@@ -35,7 +35,7 @@ end
 -- Base data: times per faction, names from the comments
 local function loadBase(faction)
 	local ns = {}
-	_G.UnitFactionGroup = function() return faction end
+	rawset(_G, "UnitFactionGroup", function() return faction end)
 	runFile(filenameBase, nil, ns)
 	return ns.FlightTimes or {}
 end
@@ -52,9 +52,9 @@ for line in io.lines(filenameBase) do
 end
 
 for _, filename in ipairs(filenamesLearned) do
-	DBMFlightTimers_Learned = nil
+	rawset(_G, "DBMFlightTimers_Learned", nil)
 	runFile(filename)
-	local learned = DBMFlightTimers_Learned
+	local learned = rawget(_G, "DBMFlightTimers_Learned")
 	if type(learned) ~= "table" or type(learned.times) ~= "table" then
 		io.stderr:write("no learned flight times in " .. filename .. "\n")
 	else

@@ -1,4 +1,4 @@
-## Interface: 30403
+## Interface: 11509, 16001, 20506, 30405, 38002, 40402, 50504, 120105, 120107
 ## Version: @project-version@
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000Flight Timers|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000Flug Timer|r
@@ -8,6 +8,7 @@
 ## X-Website: https://github.com/DeadlyBossMods/DBM-FlightTimers
 ## RequiredDeps: DBM-Core
 ## SavedVariables: DBMFlightTimers_AllSavedVars, DBMFlightTimers_Learned
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: OTHER
 ## X-DBM-Mod-Category: OTHER
@@ -15,12 +16,16 @@
 ## X-DBM-Mod-Name: Flight Timers
 ## X-DBM-Mod-Name-deDE: Flug Timer
 ## X-DBM-Mod-Name-ruRU: Таймеры полета
+## X-Curse-Project-ID: 948443
 
 localization.en.lua
 localization.de.lua
 localization.ru.lua
 
-Data/Classic-WotLK.lua
+Data/Classic.lua [AllowLoadGameType vanilla]
+Data/Classic-WotLK.lua [AllowLoadGameType tbc, wrath]
+Data/Retail.lua [AllowLoadGameType cata, mists, standard]
+Data/Forever.lua [ExcludeLoadGameType standard, vanilla, tbc, wrath, cata, mists]
 
 FlightCalculator.lua
 FlightTimers.lua

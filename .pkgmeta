@@ -1,0 +1,14 @@
+package-as: DBM-FlightTimers
+enable-nolib-creation: no
+
+ignore:
+  - FlightCalculator_Test.lua
+  - Screenshot.png
+  - Data/README.md
+  - Data/import.sh
+  - Data/import-learned.sh
+  - Data/Importer.lua
+  - Data/LearnedImporter.lua
+  - Data/FlightPoints-Classic.lua
+  - Data/FlightPoints-Classic-WotLK.lua
+  - Data/FlightPoints-Retail.lua

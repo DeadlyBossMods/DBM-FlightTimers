@@ -1,6 +1,6 @@
 local _, ns = ...
 local mod = DBM:NewMod("FlightTimers", "DBM-FlightTimers")
-local L   = mod:GetLocalizedStrings()
+mod:GetLocalizedStrings() -- also sets the mod name in its strings; nothing here uses them
 
 mod:SetRevision("20231208180000")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
@@ -34,7 +34,8 @@ local function learnedTimes(create)
 	return DBMFlightTimers_Learned and DBMFlightTimers_Learned.times and DBMFlightTimers_Learned.times[faction]
 end
 
-local flightCalc = ns.FlightCalc:New(ns.FlightTimes, learnedTimes)
+-- No data file for unknown clients, learned times still work there
+local flightCalc = ns.FlightCalc:New(ns.FlightTimes or {}, learnedTimes)
 
 function mod:PLAYER_CONTROL_LOST()
 	if self.state ~= "WAIT_FOR_START" then return end

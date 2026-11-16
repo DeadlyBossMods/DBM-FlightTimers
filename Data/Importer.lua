@@ -33,8 +33,10 @@ local function loadOrError(filename, ...)
 	return res
 end
 
-InFlight = {}
+-- InFlight's file fills the global InFlight; rawset/rawget because this script deliberately runs foreign code with globals
+rawset(_G, "InFlight", {})
 loadOrError(filenameInflight)
+local InFlight = rawget(_G, "InFlight")
 if not InFlight.defaults
 or not InFlight.defaults.global
 or not InFlight.defaults.global.Horde
@@ -47,7 +49,7 @@ local flightPoints = loadOrError(filenameFlightpoints)
 local baseFlightData = {}
 if filenameBase then
 	local faction = "Horde"
-	_G.UnitFactionGroup = function() return faction end
+	rawset(_G, "UnitFactionGroup", function() return faction end)
 	local ns = {}
 	loadOrError(filenameBase, nil, ns)
 	baseFlightData.Horde = ns.FlightTimes

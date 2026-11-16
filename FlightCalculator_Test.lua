@@ -4,11 +4,14 @@ local function makeEnv(env, base)
 	return setmetatable(env, { __index = base or _G })
 end
 
-DBM = {
+-- luaunit finds tests through globals and the loaded files expect DBM to be one; rawset keeps these deliberate
+rawset(_G, "DBM", {
 	Debug = function(self, msg)
 		print(msg)
 	end
-}
+})
+
+local tests = {}
 
 local function loadWoWModFile(name, env, modName)
 	if not name:match("%.lua$") then
@@ -24,7 +27,7 @@ local function loadWoWModFile(name, env, modName)
 	return ns
 end
 
-function TestShortNameRegex()
+function tests.TestShortNameRegex()
 	local locale = "enUS"
 	local fc = loadWoWModFile("FlightCalculator", {
 		GetLocale = function()
@@ -92,7 +95,7 @@ local times = {
 	[40] = {},
 }
 
-function TestGetFlightTimes()
+function tests.TestGetFlightTimes()
 	local fc = loadWoWModFile("FlightCalculator", mockTaxiMap)
 	local cal = fc.FlightCalc:New(times)
 	lu.assertEquals(cal:PathToSlot(1), {})
@@ -105,7 +108,7 @@ function TestGetFlightTimes()
 	lu.assertEquals(cal:PathToSlot(5), {})
 end
 
-function TestLearnedFlightTimes()
+function tests.TestLearnedFlightTimes()
 	local fc = loadWoWModFile("FlightCalculator", mockTaxiMap)
 	local learned = nil
 	local cal = fc.FlightCalc:New(times, function() return learned end)
@@ -133,7 +136,7 @@ function TestLearnedFlightTimes()
 	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=39})
 end
 
-function TestReverseFlightTimeFallback()
+function tests.TestReverseFlightTimeFallback()
 	local fc = loadWoWModFile("FlightCalculator", mockTaxiMap)
 	local learned = {[50] = {[10] = 70}}
 	local cal = fc.FlightCalc:New(times, function() return learned end)
@@ -147,7 +150,7 @@ function TestReverseFlightTimeFallback()
 	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=39})
 end
 
-function TestNodesSharingAPosition()
+function tests.TestNodesSharingAPosition()
 	-- Node 6 is unreachable and sits on top of node 3, node 7 on top of node 5
 	local env = makeEnv({
 		C_TaxiMap = {
@@ -171,7 +174,7 @@ function TestNodesSharingAPosition()
 	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=60})
 end
 
-function TestIgnoredNodes()
+function tests.TestIgnoredNodes()
 	-- Retired Forever node 3207 sits on top of node 5 and must not replace it
 	local env = makeEnv({
 		C_TaxiMap = {
@@ -192,7 +195,7 @@ function TestIgnoredNodes()
 	lu.assertNil(cal:PathToSlot(6))
 end
 
-function TestCurrentNodeAfterIgnoredSlot()
+function tests.TestCurrentNodeAfterIgnoredSlot()
 	-- An ignored node leaves a gap in the slots, the current node comes after it
 	local env = makeEnv({
 		C_TaxiMap = {
@@ -213,6 +216,8 @@ function TestCurrentNodeAfterIgnoredSlot()
 	lu.assertEquals(path, {{name="Node 2", time=30}})
 end
 
-TestSuite = {}
+for name, test in pairs(tests) do
+	rawset(_G, name, test)
+end
 
 os.exit(lu.LuaUnit.run())
