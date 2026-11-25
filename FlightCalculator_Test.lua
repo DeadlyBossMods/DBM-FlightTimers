@@ -126,14 +126,73 @@ function tests.TestLearnedFlightTimes()
 	lu.assertEquals(cal:PathToSlot(2), {{name="Node 2", time=12}})
 	lu.assertEquals(cal:PathToSlot(5), {
 		{name="Node 2", time=12},
-		{name="Node 3", time=21},
-		{name="Node 4", time=31},
+		{name="Node 3", time=21}, -- shipped 1 -> 3 matches the pieced 12 + 11 - 1
+		{name="Node 4", time=32}, -- pieced from legs only: 1 -> 4 has no time and 1 -> 3 assumes a route
 		{name="Node 5", time=60},
 	})
 	-- Learned times combine with shipped ones when piecing together hops
 	learned[10][50] = nil
 	learned[40] = {[50] = 9}
-	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=39})
+	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=40})
+end
+
+-- Learned data by kind, as the AddOn passes it
+local function learnedByKind(data)
+	return function(kind) return data[kind] end
+end
+
+function tests.TestLearnedRoutes()
+	local fc = loadWoWModFile("FlightCalculator", mockTaxiMap)
+	local learned = {routes = {["10-20-30-40-50"] = 100}}
+	local cal = fc.FlightCalc:New(times, learnedByKind(learned))
+	local path, _, _, routeIds = cal:PathToSlot(5)
+	assert(routeIds)
+	lu.assertEquals(routeIds, {10, 20, 30, 40, 50})
+	lu.assertEquals(fc.FlightCalc.RouteKey(routeIds), "10-20-30-40-50")
+	-- The exact route wins, stops without an exact route are pieced together
+	lu.assertEquals(path, {
+		{name="Node 2", time=11},
+		{name="Node 3", time=21},
+		{name="Node 4", time=31},
+		{name="Node 5", time=100},
+	})
+	-- A known part of the route is used when piecing
+	learned.routes = {["20-30-40"] = 15}
+	lu.assertEquals(cal:PathToSlot(4)[3], {name="Node 4", time=25})
+	-- Shipped routes work the same way, learned ones win
+	learned.times = {[40] = {[50] = 9}}
+	cal = fc.FlightCalc:New(times, learnedByKind(learned), {["10-20-30-40"] = 50, ["20-30-40"] = 99})
+	lu.assertEquals(cal:PathToSlot(4)[3], {name="Node 4", time=50})
+	-- Fewest segments: shipped 10-20-30-40 (50) and learned 40 -> 50 (9), minus 1 for not landing at 40
+	lu.assertEquals(cal:PathToSlot(5)[4], {name="Node 5", time=58})
+end
+
+function tests.TestStartToDestinationTimeWinsOverPiecedTime()
+	-- Stormwind -> Ironforge -> Chillwind Camp on Forever: 259 s and 294 s for the two direct flights, but flying past
+	-- Ironforge instead of landing saves 46 s, so the whole flight takes 507 s. Pieced together it would be 552 s.
+	local fc = loadWoWModFile("FlightCalculator", mockTaxiMap)
+	local shipped = {[10] = {[30] = 507}}
+	local cal = fc.FlightCalc:New(shipped, learnedByKind({routes = {["10-20"] = 259, ["20-30"] = 294}}))
+	lu.assertEquals(cal:PathToSlot(3), {
+		{name="Node 2", time=259},
+		{name="Node 3", time=507},
+	})
+	-- Without a start to destination time, pieced is the best guess
+	cal = fc.FlightCalc:New({}, learnedByKind({routes = {["10-20"] = 259, ["20-30"] = 294}}))
+	lu.assertEquals(cal:PathToSlot(3)[2], {name="Node 3", time=552})
+end
+
+function tests.TestRouteWithUnknownStops()
+	local env = makeEnv({
+		-- The first stop on the way to node 5 is at a position without a node
+		TaxiGetDestX = function(slot, hop) return slot == 5 and hop == 1 and 0.99 or (hop + 1) / numMockNodes end,
+		TaxiGetDestY = function(slot, hop) return slot == 5 and hop == 1 and 0.99 or (hop + 1) / numMockNodes end,
+	}, mockTaxiMap)
+	local fc = loadWoWModFile("FlightCalculator", env)
+	local cal = fc.FlightCalc:New(times, learnedByKind({times = {[10] = {[50] = 60}}}))
+	local path, _, _, routeIds = cal:PathToSlot(5)
+	lu.assertEquals(path, {{name="Node 5", time=60}})
+	lu.assertNil(routeIds)
 end
 
 function tests.TestReverseFlightTimeFallback()

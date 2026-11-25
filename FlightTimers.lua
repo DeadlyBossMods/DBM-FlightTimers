@@ -20,14 +20,16 @@ local timerVia = mod:NewIntermissionTimer(0, nil, "Via %s", true, "TimerViaOptio
 timer.startLarge = true
 timerVia.startLarge = true
 
--- Flight times measured and prices seen in game, account-wide: see Data/import-learned.sh for turning them into a data file.
+-- Flight times measured and prices seen in game, account-wide: see Data/import-learned.sh for turning times into a data file.
 -- DBMFlightTimers_Learned = {
---   times  = {[faction] = {[fromNodeId] = {[toNodeId] = seconds}}},
+--   routes = {[faction] = {[routeKey] = seconds}}, routeKey is the node IDs of start, stops and destination ("26-28-64")
+--   times  = {[faction] = {[fromNodeId] = {[toNodeId] = seconds}}}, without the route: learned before routes were saved,
+--            or when the stops of a route couldn't be resolved
 --   prices = {[faction] = {[fromNodeId] = {[toNodeId] = copper}}},
 --   names  = {[nodeId] = name},
 -- }
 -- SavedVariables load after this file runs, so only read the global lazily.
----@param kind "times"|"prices"
+---@param kind "routes"|"times"|"prices"
 ---@param create boolean?
 local function learnedData(kind, create)
 	local faction = UnitFactionGroup("player")
@@ -41,12 +43,8 @@ local function learnedData(kind, create)
 	return DBMFlightTimers_Learned and DBMFlightTimers_Learned[kind] and DBMFlightTimers_Learned[kind][faction]
 end
 
-local function learnedTimes(create)
-	return learnedData("times", create)
-end
-
 -- No data file for unknown clients, learned times still work there
-local flightCalc = ns.FlightCalc:New(ns.FlightTimes or {}, learnedTimes)
+local flightCalc = ns.FlightCalc:New(ns.FlightTimes or {}, learnedData, ns.FlightRoutes)
 
 function mod:PLAYER_CONTROL_LOST()
 	if self.state ~= "WAIT_FOR_START" then return end
@@ -119,11 +117,18 @@ function mod:OnEarlyLandingRequest()
 	end
 end
 
-function mod:LearnFlightTime(from, to, time)
-	local times = learnedTimes(true)
-	if not times then return end
-	times[from.id] = times[from.id] or {}
-	times[from.id][to.id] = time
+---@param routeIds number[]? Node IDs of start, stops and destination, nil if the stops are unknown
+function mod:LearnFlightTime(from, to, time, routeIds)
+	if routeIds then
+		local routes = learnedData("routes", true)
+		if not routes then return end
+		routes[ns.FlightCalc.RouteKey(routeIds)] = time
+	else
+		local times = learnedData("times", true)
+		if not times then return end
+		times[from.id] = times[from.id] or {}
+		times[from.id][to.id] = time
+	end
 	DBMFlightTimers_Learned.names[from.id] = from.fullName
 	DBMFlightTimers_Learned.names[to.id] = to.fullName
 end
@@ -165,17 +170,17 @@ function mod:PLAYER_CONTROL_GAINED()
 	))
 	-- An early landing ends somewhere else; cancelled flights (summons, battlegrounds) never get here.
 	if not self.earlyLandingRequested and actualTime >= 5 then
-		self:LearnFlightTime(self.flightFrom, self.flightTo, math.floor(actualTime + 0.5))
+		self:LearnFlightTime(self.flightFrom, self.flightTo, math.floor(actualTime + 0.5), self.flightRoute)
 	end
 	self:CancelFlight()
 end
 
 local function TakeTaxiNodeHook(slot)
-	local flightPath, from, to = flightCalc:PathToSlot(slot)
+	local flightPath, from, to, routeIds = flightCalc:PathToSlot(slot)
 	if flightPath then
 		mod.flightRequestTime = GetTime()
 		mod.flightPath = flightPath
-		mod.flightFrom, mod.flightTo = from, to
+		mod.flightFrom, mod.flightTo, mod.flightRoute = from, to, routeIds
 		mod.state = "WAIT_FOR_START"
 	else
 		DBM:Debug("Failed to calculate flight path to slot " .. tostring(slot))

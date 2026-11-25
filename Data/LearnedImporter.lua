@@ -45,7 +45,7 @@ local function loadBase(faction)
 	runFile(filenameBase, nil, ns)
 	return ns
 end
-local merged, base, names = {}, {}, {}
+local merged, base, names = {routes = {}}, {routes = {}}, {}
 for _, kind in ipairs(kinds) do
 	merged[kind.learned], base[kind.learned] = {}, {}
 end
@@ -55,6 +55,9 @@ for _, faction in ipairs(factions) do
 		merged[kind.learned][faction] = mergedNs[kind.data] or {}
 		base[kind.learned][faction] = baseNs[kind.data] or {}
 	end
+	-- Times of exact routes, keyed by the node IDs of start, stops and destination ("26-28-64")
+	merged.routes[faction] = mergedNs.FlightRoutes or {}
+	base.routes[faction] = baseNs.FlightRoutes or {}
 end
 for line in io.lines(filenameBase) do
 	local id, name = line:match("^%s*%[(%d+)%].-%-%- (.-)%s*$")
@@ -73,6 +76,16 @@ for _, filename in ipairs(filenamesLearned) do
 		for id, name in pairs(learned.names or {}) do
 			-- Names are only comments; keep the existing (English) ones, learned names may be in any locale.
 			names[id] = names[id] or name
+		end
+		for faction, learnedRoutes in pairs(learned.routes or {}) do
+			if not merged.routes[faction] then
+				io.stderr:write(("ignoring flight routes for faction %s in %s\n"):format(tostring(faction), filename))
+			else
+				for key, time in pairs(learnedRoutes) do
+					-- Direct flights too: FlightTimes doesn't say which route a time is for, FlightRoutes is exact
+					merged.routes[faction][key] = time
+				end
+			end
 		end
 		for _, kind in ipairs(kinds) do
 			for faction, learnedValues in pairs(learned[kind.learned] or {}) do
@@ -125,8 +138,48 @@ for _, kind in ipairs(kinds) do
 	io.stderr:write(("%d flight %s added or changed\n"):format(numChanges, kind.learned))
 end
 
+local function routeName(key)
+	local stops = {}
+	for id in key:gmatch("%d+") do
+		stops[#stops + 1] = nodeName(tonumber(id))
+	end
+	return table.concat(stops, " > ")
+end
+
+local numRouteChanges = 0
+for _, faction in ipairs(factions) do
+	for _, key in ipairs(sortedKeys(merged.routes[faction])) do
+		local old, time = base.routes[faction][key], merged.routes[faction][key]
+		if old ~= time then
+			numRouteChanges = numRouteChanges + 1
+			io.stderr:write(("%s: %s (%s): %s -> %d s\n"):format(faction, routeName(key), key, old and tostring(old) or "new", time))
+		end
+	end
+end
+io.stderr:write(("%d flight routes added or changed\n"):format(numRouteChanges))
+
 local function numLength(x)
 	return #tostring(x)
+end
+
+local function printRoutes(routes)
+	print("\tns.FlightRoutes = {")
+	local keys = sortedKeys(routes)
+	local longestKey, longestTime = 0, 0
+	for _, key in ipairs(keys) do
+		longestKey = math.max(longestKey, #key)
+		longestTime = math.max(longestTime, numLength(routes[key]))
+	end
+	for _, key in ipairs(keys) do
+		print(("\t\t[%q]%s = %d,%s -- %s"):format(
+			key,
+			(" "):rep(longestKey - #key),
+			routes[key],
+			(" "):rep(longestTime - numLength(routes[key])),
+			routeName(key)
+		))
+	end
+	print("\t}")
 end
 
 local function printTable(name, values)
@@ -156,7 +209,9 @@ end
 
 print[[-- This file is auto-generated, DO NOT EDIT BY HAND.
 -- See import-learned.sh for details on re-generation.
--- FlightTimes are in seconds, FlightPrices in copper (prices are not used by the AddOn yet).
+-- FlightRoutes are seconds for exact routes (keyed by the node IDs of start, stops and destination), FlightTimes are
+-- seconds between two nodes on an unknown route (InFlight data and older measurements), FlightPrices are in copper
+-- (prices are not used by the AddOn yet).
 
 local _, ns = ...
 ]]
@@ -166,6 +221,9 @@ for i, faction in ipairs(factions) do
 		-- Only write tables that have data, so a data file without prices stays unchanged
 		if next(merged[kind.learned][faction]) or kind.learned == "times" then
 			printTable(kind.data, merged[kind.learned][faction])
+		end
+		if kind.learned == "times" and next(merged.routes[faction]) then
+			printRoutes(merged.routes[faction])
 		end
 	end
 end
