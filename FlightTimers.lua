@@ -48,13 +48,17 @@ function mod:PLAYER_CONTROL_LOST()
 	self.state = "IN_FLIGHT"
 	self.controlLostTime = GetTime()
 	self.earlyLandingRequested = nil
+	local started = {}
 	for i, hop in ipairs(self.flightPath) do
-		if i == #self.flightPath then
+		local isFinal = i == #self.flightPath
+		if isFinal then
 			hop.timer = timer:Start(hop.time, hop.name)
 		else
 			hop.timer = timerVia:Start(hop.time, hop.name)
 		end
+		started[i] = ("%s%s %d s%s"):format(isFinal and "" or "via ", hop.name, hop.time, hop.timer and "" or " (not shown)")
 	end
+	DBM:Debug("Flight timers: " .. (#started > 0 and table.concat(started, ", ") or "none"))
 end
 
 function mod:CancelFlight()

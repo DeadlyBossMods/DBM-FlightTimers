@@ -163,10 +163,15 @@ function FlightCalc:PathToSlot(toSlot)
 	if not toEntry or not fromEntry then
 		return nil
 	end
-	DBM:Debug(("Getting flight times from %s (id %s, slot %d) to %s (id %s, slot %d), %d hops, shipped data %s"):format(
+	-- Stops before the destination, which is always the last hop
+	local stops = {}
+	for i = 1, #toEntry.hops - 1 do
+		stops[i] = ("%s (id %s)"):format(toEntry.hops[i].name, toEntry.hops[i].id)
+	end
+	DBM:Debug(("Getting flight times from %s (id %s, slot %d) to %s (id %s, slot %d), %s, shipped data %s"):format(
 		fromEntry.name, fromEntry.id, fromEntry.slot,
 		toEntry.name, toEntry.id, toEntry.slot,
-		#toEntry.hops, next(self.flightTimes) and "loaded" or "empty"
+		#stops > 0 and "via " .. table.concat(stops, ", ") or "direct", next(self.flightTimes) and "loaded" or "empty"
 	))
 	local result = {}
 	for i, hop in ipairs(toEntry.hops) do
