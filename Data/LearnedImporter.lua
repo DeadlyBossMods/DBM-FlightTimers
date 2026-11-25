@@ -32,17 +32,29 @@ local function runFile(filename, ...)
 	end
 end
 
--- Base data: times per faction, names from the comments
+-- The learned data kinds, how they are named in the data file, and their unit for the change report
+local kinds = {
+	{learned = "times", data = "FlightTimes", unit = "s"},
+	{learned = "prices", data = "FlightPrices", unit = "copper"},
+}
+
+-- Base data per kind and faction, names from the comments
 local function loadBase(faction)
 	local ns = {}
 	rawset(_G, "UnitFactionGroup", function() return faction end)
 	runFile(filenameBase, nil, ns)
-	return ns.FlightTimes or {}
+	return ns
 end
-local times, baseTimes, names = {}, {}, {}
+local merged, base, names = {}, {}, {}
+for _, kind in ipairs(kinds) do
+	merged[kind.learned], base[kind.learned] = {}, {}
+end
 for _, faction in ipairs(factions) do
-	times[faction] = loadBase(faction)
-	baseTimes[faction] = loadBase(faction)
+	local mergedNs, baseNs = loadBase(faction), loadBase(faction)
+	for _, kind in ipairs(kinds) do
+		merged[kind.learned][faction] = mergedNs[kind.data] or {}
+		base[kind.learned][faction] = baseNs[kind.data] or {}
+	end
 end
 for line in io.lines(filenameBase) do
 	local id, name = line:match("^%s*%[(%d+)%].-%-%- (.-)%s*$")
@@ -55,21 +67,24 @@ for _, filename in ipairs(filenamesLearned) do
 	rawset(_G, "DBMFlightTimers_Learned", nil)
 	runFile(filename)
 	local learned = rawget(_G, "DBMFlightTimers_Learned")
-	if type(learned) ~= "table" or type(learned.times) ~= "table" then
-		io.stderr:write("no learned flight times in " .. filename .. "\n")
+	if type(learned) ~= "table" then
+		io.stderr:write("no learned flight data in " .. filename .. "\n")
 	else
 		for id, name in pairs(learned.names or {}) do
 			-- Names are only comments; keep the existing (English) ones, learned names may be in any locale.
 			names[id] = names[id] or name
 		end
-		for faction, learnedTimes in pairs(learned.times) do
-			if not times[faction] then
-				io.stderr:write("ignoring flight times for faction " .. tostring(faction) .. " in " .. filename .. "\n")
-			else
-				for from, destinations in pairs(learnedTimes) do
-					times[faction][from] = times[faction][from] or {}
-					for to, time in pairs(destinations) do
-						times[faction][from][to] = time
+		for _, kind in ipairs(kinds) do
+			for faction, learnedValues in pairs(learned[kind.learned] or {}) do
+				local target = merged[kind.learned][faction]
+				if not target then
+					io.stderr:write(("ignoring flight %s for faction %s in %s\n"):format(kind.learned, tostring(faction), filename))
+				else
+					for from, destinations in pairs(learnedValues) do
+						target[from] = target[from] or {}
+						for to, value in pairs(destinations) do
+							target[from][to] = value
+						end
 					end
 				end
 			end
@@ -90,36 +105,39 @@ local function sortedKeys(t)
 	return keys
 end
 
-local numChanges = 0
-for _, faction in ipairs(factions) do
-	for _, from in ipairs(sortedKeys(times[faction])) do
-		local old = baseTimes[faction][from] or {}
-		for _, to in ipairs(sortedKeys(times[faction][from])) do
-			local time = times[faction][from][to]
-			if old[to] ~= time then
-				numChanges = numChanges + 1
-				io.stderr:write(("%s: %s (%d) -> %s (%d): %s -> %d\n"):format(
-					faction, nodeName(from), from, nodeName(to), to, old[to] and tostring(old[to]) or "new", time
-				))
+for _, kind in ipairs(kinds) do
+	local numChanges = 0
+	for _, faction in ipairs(factions) do
+		local values = merged[kind.learned][faction]
+		for _, from in ipairs(sortedKeys(values)) do
+			local old = base[kind.learned][faction][from] or {}
+			for _, to in ipairs(sortedKeys(values[from])) do
+				local value = values[from][to]
+				if old[to] ~= value then
+					numChanges = numChanges + 1
+					io.stderr:write(("%s: %s (%d) -> %s (%d): %s -> %d %s\n"):format(
+						faction, nodeName(from), from, nodeName(to), to, old[to] and tostring(old[to]) or "new", value, kind.unit
+					))
+				end
 			end
 		end
 	end
+	io.stderr:write(("%d flight %s added or changed\n"):format(numChanges, kind.learned))
 end
-io.stderr:write(("%d flight times added or changed\n"):format(numChanges))
 
 local function numLength(x)
 	return #tostring(x)
 end
 
-local function printFaction(factionTimes)
-	print("\tns.FlightTimes = {")
-	for _, from in ipairs(sortedKeys(factionTimes)) do
-		local destinations = factionTimes[from]
+local function printTable(name, values)
+	print(("\tns.%s = {"):format(name))
+	for _, from in ipairs(sortedKeys(values)) do
+		local destinations = values[from]
 		local keys = sortedKeys(destinations)
-		local longestId, longestTime = 0, 0
+		local longestId, longestValue = 0, 0
 		for _, to in ipairs(keys) do
 			longestId = math.max(longestId, numLength(to))
-			longestTime = math.max(longestTime, numLength(destinations[to]))
+			longestValue = math.max(longestValue, numLength(destinations[to]))
 		end
 		print(("\t\t[%d] = { -- %s"):format(from, nodeName(from)))
 		for _, to in ipairs(keys) do
@@ -127,7 +145,7 @@ local function printFaction(factionTimes)
 				to,
 				(" "):rep(longestId - numLength(to)),
 				destinations[to],
-				(" "):rep(longestTime - numLength(destinations[to])),
+				(" "):rep(longestValue - numLength(destinations[to])),
 				nodeName(to)
 			))
 		end
@@ -138,12 +156,18 @@ end
 
 print[[-- This file is auto-generated, DO NOT EDIT BY HAND.
 -- See import-learned.sh for details on re-generation.
+-- FlightTimes are in seconds, FlightPrices in copper (prices are not used by the AddOn yet).
 
 local _, ns = ...
 ]]
 for i, faction in ipairs(factions) do
 	print(('%s UnitFactionGroup("player") == "%s" then'):format(i == 1 and "if" or "elseif", faction))
-	printFaction(times[faction])
+	for _, kind in ipairs(kinds) do
+		-- Only write tables that have data, so a data file without prices stays unchanged
+		if next(merged[kind.learned][faction]) or kind.learned == "times" then
+			printTable(kind.data, merged[kind.learned][faction])
+		end
+	end
 end
 print[[else
 	ns.FlightTimes = {}

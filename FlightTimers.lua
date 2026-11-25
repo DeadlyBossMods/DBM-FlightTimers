@@ -6,7 +6,8 @@ mod:SetRevision("20231208180000")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"PLAYER_CONTROL_LOST",
-	"PLAYER_CONTROL_GAINED"
+	"PLAYER_CONTROL_GAINED",
+	"TAXIMAP_OPENED"
 )
 
 mod.state = "IDLE" -- IDLE | WAIT_FOR_START | IN_FLIGHT | LEARNING
@@ -19,19 +20,29 @@ local timerVia = mod:NewIntermissionTimer(0, nil, "Via %s", true, "TimerViaOptio
 timer.startLarge = true
 timerVia.startLarge = true
 
--- Flight times measured in game, account-wide: see Data/import-learned.sh for turning them into a data file.
--- DBMFlightTimers_Learned = {times = {[faction] = {[fromNodeId] = {[toNodeId] = seconds}}}, names = {[nodeId] = name}}
+-- Flight times measured and prices seen in game, account-wide: see Data/import-learned.sh for turning them into a data file.
+-- DBMFlightTimers_Learned = {
+--   times  = {[faction] = {[fromNodeId] = {[toNodeId] = seconds}}},
+--   prices = {[faction] = {[fromNodeId] = {[toNodeId] = copper}}},
+--   names  = {[nodeId] = name},
+-- }
 -- SavedVariables load after this file runs, so only read the global lazily.
-local function learnedTimes(create)
+---@param kind "times"|"prices"
+---@param create boolean?
+local function learnedData(kind, create)
 	local faction = UnitFactionGroup("player")
 	if not faction then return nil end
 	if create then
 		DBMFlightTimers_Learned = DBMFlightTimers_Learned or {}
-		DBMFlightTimers_Learned.times = DBMFlightTimers_Learned.times or {}
+		DBMFlightTimers_Learned[kind] = DBMFlightTimers_Learned[kind] or {}
 		DBMFlightTimers_Learned.names = DBMFlightTimers_Learned.names or {}
-		DBMFlightTimers_Learned.times[faction] = DBMFlightTimers_Learned.times[faction] or {}
+		DBMFlightTimers_Learned[kind][faction] = DBMFlightTimers_Learned[kind][faction] or {}
 	end
-	return DBMFlightTimers_Learned and DBMFlightTimers_Learned.times and DBMFlightTimers_Learned.times[faction]
+	return DBMFlightTimers_Learned and DBMFlightTimers_Learned[kind] and DBMFlightTimers_Learned[kind][faction]
+end
+
+local function learnedTimes(create)
+	return learnedData("times", create)
 end
 
 -- No data file for unknown clients, learned times still work there
@@ -115,6 +126,34 @@ function mod:LearnFlightTime(from, to, time)
 	times[from.id][to.id] = time
 	DBMFlightTimers_Learned.names[from.id] = from.fullName
 	DBMFlightTimers_Learned.names[to.id] = to.fullName
+end
+
+-- Learn the price of every destination the taxi map offers, so prices can be gathered without flying every route
+function mod:TAXIMAP_OPENED()
+	if not TaxiNodeCost then return end
+	local map = flightCalc:getFlightMap()
+	if not map then return end
+	local from
+	for _, entry in pairs(map) do
+		if entry.isCurrent then
+			from = entry
+		end
+	end
+	local prices = from and learnedData("prices", true)
+	if not prices then return end
+	prices[from.id] = prices[from.id] or {}
+	local names = DBMFlightTimers_Learned.names
+	for slot, to in pairs(map) do
+		local price = to ~= from and not to.isUnreachable and TaxiNodeCost(slot)
+		if price and prices[from.id][to.id] ~= price then
+			DBM:Debug(("Flight price from %s (id %s) to %s (id %s): %d copper (%s)"):format(
+				from.name, from.id, to.name, to.id, price, prices[from.id][to.id] and "was " .. prices[from.id][to.id] or "new"
+			))
+			prices[from.id][to.id] = price
+			names[from.id] = from.fullName
+			names[to.id] = to.fullName
+		end
+	end
 end
 
 function mod:PLAYER_CONTROL_GAINED()

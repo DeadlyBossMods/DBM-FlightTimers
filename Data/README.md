@@ -27,9 +27,10 @@ This file is created by first taking Classic timing data and then applying Retai
 
 The AddOn measures every completed flight (no early landing, not interrupted by a summon or battleground) and saves the time in the SavedVariables (`DBMFlightTimers_Learned`, per faction and taxi node ID).
 Learned times are used instead of the shipped ones from then on.
+Opening a taxi map also saves the price of every destination it offers (`prices` in the same table), so prices can be collected without flying every route.
 
 Forever.lua started as a copy of the Classic data (the node IDs are the same) and is updated from these learned times.
-Run import-learned.sh with your WoW base directory to merge the learned times from all accounts into Forever.lua, it prints every added or changed time:
+Run import-learned.sh with your WoW base directory to merge the learned times and prices from all accounts into Forever.lua (`ns.FlightTimes` in seconds, `ns.FlightPrices` in copper; the AddOn doesn't use prices yet), it prints every added or changed value:
 
 ```
 ./import-learned.sh '/Applications/World of Warcraft/'
